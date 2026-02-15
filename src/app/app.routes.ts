@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import {Donation} from './features/donation/donation';
-import {PaymentSuccess} from './features/payment-success/payment-success';
-import {PaymentCancel} from './features/payment-cancel/payment-cancel';
+import {TransactionReceipt} from './features/transaction-receipt/transaction-receipt';
+
 
 export const routes: Routes = [
 
@@ -10,12 +10,8 @@ export const routes: Routes = [
     component: Donation
   },
   {
-    path: 'success',
-    component: PaymentSuccess,
-  },
-  {
-    path:'cancel',
-    component: PaymentCancel,
+    path: 'transaction-receipt',
+    component: TransactionReceipt,
   },
   {
     path: '',

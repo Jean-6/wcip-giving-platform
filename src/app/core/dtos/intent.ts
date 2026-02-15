@@ -1,4 +1,4 @@
-export interface PaymentIntentRes {
+export interface Intent {
   id: string;
   amount: number;
   currency: string;
@@ -9,3 +9,4 @@ export interface PaymentIntentRes {
   cardLast4: string;
   created: number;
 }
+

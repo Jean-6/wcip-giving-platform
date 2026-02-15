@@ -1,7 +1,6 @@
-import {BillingDetails} from './billingDetails';
+import {BillingDetails} from './billing-details';
 
-
-export interface PaymentIntentReq {
+export interface IntentRequest {
   clientSecret?: string;
   amount: number;
   currency: string;

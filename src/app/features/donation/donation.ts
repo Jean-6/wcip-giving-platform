@@ -4,13 +4,15 @@ import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {MyStripeService} from './service/my-stripe-service';
 import {AlertService} from '../../core/services/alert-service';
 import {Dialog} from 'primeng/dialog';
-import {PaymentService} from '../../core/services/payment-service';
-import {PaymentIntentReq} from '../../core/dtos/paymentIntentReq';
+import {PaymentService} from '../../services/payment-service';
+import {IntentRequest} from '../../core/dtos/intent-request';
 import {GoogleMapsLoaderService} from '../../core/services/google-maps-loader-service';
 import {DatePicker} from 'primeng/datepicker';
 import {minMaxDateValidator} from '../../shared/validator/min-max-date.validator';
 import {Router} from '@angular/router';
 import {AutoFocus} from 'primeng/autofocus';
+import {ResponseWrapper} from '../../core/dtos/response-wrapper';
+import {CheckoutSessionRes} from '../../core/dtos/checkoutSessionRes';
 
 
 declare const google: any;
@@ -32,7 +34,7 @@ declare const google: any;
 export class Donation implements OnInit{
 
   infoForm!: FormGroup;
-  paymentMethod: PaymentMethod ='CARD_DIRECT';
+  paymentMethod: PaymentMethod = 'STRIPE_CHECKOUT';
 
   selectedPanel: 'support' | 'facture' | 'update' | 'stripe' | null = null;
   showStripeDialog = false;
@@ -51,8 +53,7 @@ export class Donation implements OnInit{
               private stripeService: MyStripeService,
               private paymentService: PaymentService,
               private alert: AlertService,
-              private googleMapsLoader: GoogleMapsLoaderService,
-              private router: Router
+              private googleMapsLoader: GoogleMapsLoaderService
   ) {
     this.infoForm = this.fb.group({
       amount: ['', [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]+$/)]],
@@ -129,11 +130,9 @@ export class Donation implements OnInit{
 
 
     if(this.paymentMethod === 'STRIPE_CHECKOUT'){
-      console.log("submit: "+ "STRIPE_CHECKOUT")
       this.redirectToCheckout()
     }
     if(this.paymentMethod === 'CARD_DIRECT'){
-      console.log("submit: "+ "CARD_DIRECT")
       this.cardMounted = false;
       this.showStripeDialog = true;
     }
@@ -174,7 +173,7 @@ export class Donation implements OnInit{
   redirectToCheckout() {
     this.isLoading = true;
 
-    const payload: PaymentIntentReq = {
+    const payload: IntentRequest = {
       amount: this.infoForm.value.amount * 100,
       currency: 'eur',
       reason: this.infoForm.value.reason,
@@ -187,12 +186,10 @@ export class Donation implements OnInit{
       }
     };
 
-    console.log("redirectToCheckout: {}", payload)
-
     this.paymentService.createCheckoutSession(payload)
       .subscribe({
-        next: ({ url }) => {
-          window.location.href = url; // Redirect to stripe
+        next: ( res: ResponseWrapper<CheckoutSessionRes>) => {
+          window.location.href = res.data.url; // Redirect to stripe
         },
         error: () => {
           this.isLoading = false;
@@ -201,15 +198,16 @@ export class Donation implements OnInit{
       });
 
   }
-  payDirect() {
 
+
+  payDirect() {
     if (this.isLoading) return;
     this.isLoading = true;
 
     const amount = this.infoForm.value.amount * 100;
     const addressParsed = this.googleMapsLoader.parseAddress(this.infoForm.value.address)
 
-    const payload: PaymentIntentReq = {
+    const payload: IntentRequest = {
       clientSecret: undefined,
       amount: amount,
       currency: 'eur',
@@ -228,33 +226,15 @@ export class Donation implements OnInit{
     // Sending backend
     this.paymentService.createPaymentIntent(payload)
       .subscribe({
-        next: ({ clientSecret }) => {
+        next: (res:ResponseWrapper<IntentRequest>) => {
 
-          payload.clientSecret = clientSecret;
+          payload.clientSecret = res.data.clientSecret;
 
           // Stripe Confirmation
           this.stripeService.confirmPayment$(payload)
             .subscribe(result => {
               this.isLoading = false;
 
-              const paymentIntentId = result.paymentIntentId;
-
-              if (result.success) {
-                this.alert.success('Paiement réussi');
-                this.showStripeDialog = false;
-                this.resetForm()
-                this.router.navigate(['/success'],
-                  {
-                    queryParams: { payment_intent: paymentIntentId }
-                  })
-
-              } else {
-                this.alert.error('Une erreur est survenue');
-                this.router.navigate(['/cancel'],
-                  {
-                    queryParams: { payment_intent: paymentIntentId }
-                  })
-              }
             });
         },
         error: err => {
