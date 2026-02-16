@@ -5,14 +5,13 @@ import {MyStripeService} from './service/my-stripe-service';
 import {AlertService} from '../../core/services/alert-service';
 import {Dialog} from 'primeng/dialog';
 import {PaymentService} from '../../services/payment-service';
-import {IntentRequest} from '../../core/dtos/intent-request';
+import {CheckoutSessionRequest} from '../../core/dtos/checkout-session-request';
 import {GoogleMapsLoaderService} from '../../core/services/google-maps-loader-service';
 import {DatePicker} from 'primeng/datepicker';
 import {minMaxDateValidator} from '../../shared/validator/min-max-date.validator';
-import {Router} from '@angular/router';
 import {AutoFocus} from 'primeng/autofocus';
 import {ResponseWrapper} from '../../core/dtos/response-wrapper';
-import {CheckoutSessionRes} from '../../core/dtos/checkoutSessionRes';
+import {CheckoutSessionResponse} from '../../core/dtos/checkout-session-response';
 
 
 declare const google: any;
@@ -49,11 +48,11 @@ export class Donation implements OnInit{
   @ViewChild('cardCvcEl') cardCvcEl!: ElementRef;
 
 
-  constructor(private fb: FormBuilder,
-              private stripeService: MyStripeService,
-              private paymentService: PaymentService,
-              private alert: AlertService,
-              private googleMapsLoader: GoogleMapsLoaderService
+  constructor(private readonly fb: FormBuilder,
+              private readonly stripeService: MyStripeService,
+              private readonly paymentService: PaymentService,
+              private readonly alert: AlertService,
+              private readonly googleMapsLoader: GoogleMapsLoaderService
   ) {
     this.infoForm = this.fb.group({
       amount: ['', [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]+$/)]],
@@ -173,7 +172,7 @@ export class Donation implements OnInit{
   redirectToCheckout() {
     this.isLoading = true;
 
-    const payload: IntentRequest = {
+    const payload: CheckoutSessionRequest = {
       amount: this.infoForm.value.amount * 100,
       currency: 'eur',
       reason: this.infoForm.value.reason,
@@ -183,13 +182,14 @@ export class Donation implements OnInit{
         email: this.infoForm.value.email,
         phone: this.infoForm.value.phone,
         address: this.googleMapsLoader.parseAddress(this.infoForm.value.address)
-      }
+      },
+      idempotencyKey: crypto.randomUUID()
     };
 
     this.paymentService.createCheckoutSession(payload)
       .subscribe({
-        next: ( res: ResponseWrapper<CheckoutSessionRes>) => {
-          window.location.href = res.data.url; // Redirect to stripe
+        next: ( res: ResponseWrapper<CheckoutSessionResponse>) => {
+          globalThis.location.href = res.data.url; // Redirect to stripe
         },
         error: () => {
           this.isLoading = false;
@@ -207,7 +207,7 @@ export class Donation implements OnInit{
     const amount = this.infoForm.value.amount * 100;
     const addressParsed = this.googleMapsLoader.parseAddress(this.infoForm.value.address)
 
-    const payload: IntentRequest = {
+    const payload: CheckoutSessionRequest = {
       clientSecret: undefined,
       amount: amount,
       currency: 'eur',
@@ -218,7 +218,8 @@ export class Donation implements OnInit{
         email: this.infoForm.value.email,
         phone: this.infoForm.value.phone,
         address: addressParsed
-      }
+      },
+      idempotencyKey: crypto.randomUUID()
     };
 
     console.log("payDirect: {}", payload)
@@ -226,7 +227,7 @@ export class Donation implements OnInit{
     // Sending backend
     this.paymentService.createPaymentIntent(payload)
       .subscribe({
-        next: (res:ResponseWrapper<IntentRequest>) => {
+        next: (res:ResponseWrapper<CheckoutSessionRequest>) => {
 
           payload.clientSecret = res.data.clientSecret;
 

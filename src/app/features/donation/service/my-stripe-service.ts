@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {IntentRequest} from '../../../core/dtos/intent-request';
+import {CheckoutSessionRequest} from '../../../core/dtos/checkout-session-request';
 import {
   loadStripe,
   Stripe,
@@ -113,7 +113,7 @@ export class MyStripeService {
    */
 
 
-  confirmPayment$(payload: IntentRequest): Observable<{
+  confirmPayment$(payload: CheckoutSessionRequest): Observable<{
     success: boolean;
     paymentIntentId: string | null;
     error: string | null }> {

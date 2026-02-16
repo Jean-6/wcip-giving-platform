@@ -6,6 +6,7 @@ import {ResponseWrapper} from '../../core/dtos/response-wrapper';
 import {Session} from '../../core/dtos/session';
 import {AlertService} from '../../core/services/alert-service';
 import {DatePipe, DecimalPipe, NgIf} from '@angular/common';
+import {Loader} from '../../shared/loader/loader';
 
 @Component({
   selector: 'app-transaction-receipt',
@@ -14,6 +15,7 @@ import {DatePipe, DecimalPipe, NgIf} from '@angular/common';
     DatePipe,
     DecimalPipe,
     NgIf,
+    Loader,
   ],
   templateUrl: './transaction-receipt.html',
   styleUrl: './transaction-receipt.css',
@@ -32,17 +34,17 @@ export class TransactionReceipt implements OnInit{
 
   ngOnInit(): void {
 
+    this.isLoading = true
     this.route.queryParams.subscribe(params => {
       const sessionId = params['session_id'];
-      console.log("session id: {}",sessionId)
       this.paymentService.getSession(sessionId).subscribe({
         next: (res: ResponseWrapper<Session>) =>{
-          console.log("res data: {}",res.data)
           this.session = res.data;
-          this.isLoading =true;
+          console.log(this.session)
+          this.isLoading =false;
         },
         error: () =>{
-          this.isLoading = false;
+          this.isLoading = true;
           this.alert.error('Erreur lors du chargement de session');
         }
       });
@@ -50,12 +52,12 @@ export class TransactionReceipt implements OnInit{
   }
 
   get amountInEuro(): number{
-    return (this.paymentIntent?.amount ?? 0) / 100;
+    return (this.session?.amountTotal ?? 0) / 100;
   }
 
   get createdDate(): number | null {
-    return this.paymentIntent?.created
-      ? this.paymentIntent.created * 1000
+    return this.session?.createdAt
+      ? this.session.createdAt * 1000
       : null;
   }
 

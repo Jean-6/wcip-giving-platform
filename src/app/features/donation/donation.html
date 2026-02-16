@@ -230,14 +230,14 @@
         </div>
         <!-- Submit -->
         <button
-          [class.cursor-not-allowed]="infoForm.invalid"
-          [class.bg-red-600]="infoForm.valid"
-          [class.bg-gray-400]="infoForm.invalid"
-          [disabled]="infoForm.invalid"
+          [class.cursor-not-allowed]="infoForm.invalid || isLoading"
+          [class.bg-red-600]="infoForm.valid || isLoading"
+          [class.bg-gray-400]="infoForm.invalid || isLoading"
+          [disabled]="infoForm.invalid || isLoading"
           class="w-full py-2 bg-red-600 text-white shadow-md
            hover:bg-red-700 hover:shadow-lg transition-all active:scale-[0.98]"
           type="submit">
-          Valider
+          {{isLoading ? 'Chargement en cours...' : 'Valider'}}
         </button>
       </form>
     </div>
