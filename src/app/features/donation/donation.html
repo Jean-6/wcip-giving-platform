@@ -29,8 +29,6 @@
         </div>
         <!-- Giving Options -->
         <div class="space-y-14">
-          <h3 class="uppercase text-sm tracking-widest opacity-70 font-semibold ">
-          </h3>
           <div class="">
             <h2 class="uppercase text-sm font-semibold py-1 tracking-wide">local</h2>
             <div class="flex gap-3">
@@ -97,15 +95,22 @@
     <div class="w-full">
       <div class="flex flex-wrap gap-4"></div>
       <!-- Form -->
+
+      <ng-container *ngIf="isLoading">
+        <app-loader></app-loader>
+      </ng-container>
+
       <form
+        *ngIf="!isLoading"
         [formGroup]="infoForm"
         (ngSubmit)="submit()"
         class="space-y-4  w-full mx-auto bg-white p-8 shadow-sm border border-gray-100">
         <!-- Devise -->
         <h2 class="font-bold text-sm">Informations personnelles</h2>
         <div class="w-40">
-          <label class="text-xs font-bold text-gray-800">Devise</label>
+          <label for="currency" class="text-xs font-bold text-gray-800">Devise</label>
           <select
+            id="currency"
             class="w-full px-4 py-2 mt-1 border border-gray-300 bg-white text-gray-900
              focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all">
             <option>EUR</option>
@@ -116,8 +121,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Montant -->
           <div class="space-y-1">
-            <label class="text-xs font-bold text-gray-800">Montant</label>
+            <label for="amount" class="text-xs font-bold text-gray-800">Montant</label>
             <input
+              id="amount"
               class="w-full px-4 py-1.5  border border-gray-300 text-gray-900
              focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
               formControlName="amount"
@@ -130,8 +136,9 @@
 
           <!-- Offrande -->
           <div class="space-y-1">
-            <label class="text-xs font-bold text-gray-800">Offrande</label>
+            <label for ="reason" class="text-xs font-bold text-gray-800">Offrande</label>
             <select
+              id="reason"
               class="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900
              focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
               formControlName="reason">
@@ -152,8 +159,9 @@
         <!-- Prénoms + Nom -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="space-y-1">
-            <label class="text-xs font-bold text-gray-800">Prénoms</label>
+            <label for="firstname" class="text-xs font-bold text-gray-800">Prénoms</label>
             <input
+              id="firstname"
               class="w-full px-4 py-1.5 border border-gray-300 text-gray-900
                focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
               formControlName="firstname"
@@ -166,8 +174,9 @@
           </div>
 
           <div class="space-y-1">
-            <label class="text-xs font-bold text-gray-800">Nom</label>
+            <label for="lastname" class="text-xs font-bold text-gray-800">Nom</label>
             <input
+              id="lastname"
               class="w-full px-4 py-1.5 border border-gray-300 text-gray-900
                focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
               formControlName="lastname"/>
@@ -183,8 +192,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <!-- Email -->
           <div class="space-y-1">
-            <label class="text-xs font-bold text-gray-800">Email</label>
+            <label for="email"  class="text-xs font-bold text-gray-800">Email</label>
             <input
+              id="email"
               class="w-full px-4 py-1.5 border border-gray-300 text-gray-900
              focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
               type="email"
@@ -200,8 +210,9 @@
 
           <!-- Téléphone -->
           <div class="space-y-1">
-            <label class="text-xs font-bold text-gray-800">Téléphone</label>
+            <label for="phone" class="text-xs font-bold text-gray-800">Téléphone</label>
             <input
+              id="phone"
               class="w-full px-4 py-1.5  border border-gray-300 text-gray-900
              focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
               formControlName="phone"
@@ -216,8 +227,9 @@
         </div>
 
         <div class="">
-          <label class="text-xs font-bold text-gray-800">Adresse</label>
+          <label for="address" class="text-xs font-bold text-gray-800">Adresse</label>
           <input
+            id="address"
             #addressInput
             class="w-full px-4 py-1.5 border border-gray-300 text-gray-900
                focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
@@ -323,8 +335,9 @@
               (ngSubmit)="submitReportForm()">
               <!-- Email -->
               <div class="space-y-1">
-                <label class="text-xs font-bold text-gray-800">Messagerie électronique</label>
+                <label for="electronicMsg" class="text-xs font-bold text-gray-800">Messagerie électronique</label>
                 <input
+                  id="electronicMsg"
                   type="email"
                   formControlName="email"
                   class="w-full px-4 py-2 border border-gray-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all text-gray-900"
@@ -335,9 +348,9 @@
               <!-- Dates -->
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="space-y-1">
-                  <div>  <label class="text-xs font-bold text-gray-800">Date de début</label></div>
-                  <!--<input type="date" class="w-full px-4 py-2 border border-gray-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all text-gray-900" />-->
+                  <div>  <label for="minDate" class="text-xs font-bold text-gray-800">Date de début</label></div>
                   <p-datePicker
+                    id="minDate"
                     formControlName="minDate"
                     fluid  class="w-full"
                     dateFormat="dd-mm-yy"
@@ -345,9 +358,9 @@
                   <div *ngIf="reportForm.get('minDate')?.invalid && reportForm.get('minDate')?.touched" class="text-red-500 text-xs"> </div>
                 </div>
                 <div class="space-y-1">
-                  <div> <label class="text-xs font-bold text-gray-800">Date de fin</label></div>
-                  <!--<input type="date" class="w-full px-4 py-2 border border-gray-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all text-gray-900" />-->
+                  <div> <label for="maxDate" class="text-xs font-bold text-gray-800">Date de fin</label></div>
                   <p-datePicker
+                    id="maxDate"
                     formControlName="maxDate"
                     fluid class="w-full"
                     dateFormat="dd-mm-yy"
@@ -368,11 +381,7 @@
                 class="w-full py-2 mt-5 text-white transition-all  " >
                 Envoyer une demande
               </button>
-
             </form>
-
-
-
           </div>
       </div>
 
@@ -434,12 +443,6 @@
 
   <!-- STRIPE DIALOG -->
 
-<!--
-  <div *ngIf="isLoading"  class="card flex justify-center">
-    <p-progress-spinner ariaLabel="loading" />
-  </div>-->
-
-
   <p-dialog
     class="square-dialog"
     [pAutoFocus]="false"
@@ -469,7 +472,7 @@
       <!-- TITLE -->
       <h2 class="font-bold text-sm mb-2">Informations de paiement</h2>
       <!-- CARD NUMBER -->
-      <label class="block text-xs text-gray-600 mb-1">
+      <label for="cardNumber" class="block text-xs text-gray-600 mb-1">
         Numéro de carte
       </label>
 
@@ -478,7 +481,7 @@
              px-4 py-3 mb-4
              focus-within:ring-2 focus-within:ring-blue-500
              focus-within:border-blue-500 transition">
-        <div #cardNumberEl class="h-full"></div>
+        <div id="cardNumber" #cardNumberEl class="h-full"></div>
       </div>
 
       <!-- EXPIRY + CVC -->
@@ -486,7 +489,7 @@
 
         <!-- EXPIRY -->
         <div>
-          <label class="block text-xs text-gray-600 mb-1">
+          <label for="expiry" class="block text-xs text-gray-600 mb-1">
             Date d’expiration
           </label>
 
@@ -495,13 +498,13 @@
                  px-4 py-3
                  focus-within:ring-2 focus-within:ring-blue-500
                  focus-within:border-blue-500 transition">
-            <div #cardExpiryEl class="h-full"></div>
+            <div id="expiry" #cardExpiryEl class="h-full"></div>
           </div>
         </div>
 
         <!-- CVC -->
         <div>
-          <label class="block text-xs text-gray-600 mb-1">
+          <label for="cvc" class="block text-xs text-gray-600 mb-1">
             CVC
           </label>
 
@@ -510,7 +513,7 @@
                  px-4 py-3
                  focus-within:ring-2 focus-within:ring-blue-500
                  focus-within:border-blue-500 transition">
-            <div #cardCvcEl class="h-full"></div>
+            <div id="cvc" #cardCvcEl class="h-full"></div>
           </div>
         </div>
 
@@ -534,3 +537,4 @@
 
 </div>
 
+<!--<input type="date" class="w-full px-4 py-2 border border-gray-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all text-gray-900" />-->

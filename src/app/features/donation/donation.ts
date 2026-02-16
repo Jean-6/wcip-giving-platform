@@ -12,6 +12,7 @@ import {minMaxDateValidator} from '../../shared/validator/min-max-date.validator
 import {AutoFocus} from 'primeng/autofocus';
 import {ResponseWrapper} from '../../core/dtos/response-wrapper';
 import {CheckoutSessionResponse} from '../../core/dtos/checkout-session-response';
+import {Loader} from '../../shared/loader/loader';
 
 
 declare const google: any;
@@ -25,6 +26,7 @@ declare const google: any;
     FormsModule,
     DatePicker,
     AutoFocus,
+    Loader,
   ],
   templateUrl: './donation.html',
   styleUrl: './donation.css',
@@ -109,34 +111,7 @@ export class Donation implements OnInit{
     this.selectedPanel = null;
   }
 
-  submit() {
 
-
-    if(!this.paymentMethod){
-      this.alert.warn("Merci de selection un mode de paiement")
-      return;
-    }
-
-    this.isLoading = true;
-
-    if (this.infoForm.invalid) {
-      this.infoForm.markAllAsTouched();
-      return;
-    }
-
-
-    (document.activeElement as HTMLElement)?.blur();
-
-
-    if(this.paymentMethod === 'STRIPE_CHECKOUT'){
-      this.redirectToCheckout()
-    }
-    if(this.paymentMethod === 'CARD_DIRECT'){
-      this.cardMounted = false;
-      this.showStripeDialog = true;
-    }
-    this.isLoading = false;
-  }
 
   /**
    * Called by p-dialog (onShow)
@@ -169,6 +144,32 @@ export class Donation implements OnInit{
   }
 
 
+
+  submit() {
+
+
+    if(!this.paymentMethod){
+      this.alert.warn("Merci de selection un mode de paiement")
+      return;
+    }
+
+    if (this.infoForm.invalid) {
+      this.infoForm.markAllAsTouched();
+      return;
+    }
+    this.isLoading = true;
+    (document.activeElement as HTMLElement)?.blur();
+    if(this.paymentMethod === 'STRIPE_CHECKOUT'){
+      this.redirectToCheckout();
+      return;
+    }
+    if(this.paymentMethod === 'CARD_DIRECT'){
+      this.cardMounted = false;
+      this.showStripeDialog = true;
+      this.isLoading = false;
+    }
+
+  }
   redirectToCheckout() {
     this.isLoading = true;
 
@@ -189,6 +190,7 @@ export class Donation implements OnInit{
     this.paymentService.createCheckoutSession(payload)
       .subscribe({
         next: ( res: ResponseWrapper<CheckoutSessionResponse>) => {
+
           globalThis.location.href = res.data.url; // Redirect to stripe
         },
         error: () => {
