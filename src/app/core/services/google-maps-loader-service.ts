@@ -13,18 +13,19 @@ export class GoogleMapsLoaderService {
 
   private loaded = false;
   private loading!: Promise<void>;
-  apiKey = environment.googleMapsApiKey;
+  googleMapsApiKey = environment.googleMapsApiKey;
 
 
   load(): Promise<void> {
     if (this.loaded) return Promise.resolve();
+
     if (this.loading) return this.loading;
 
     this.loading = new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src =
         'https://maps.googleapis.com/maps/api/js' +
-        `?key=${this.apiKey}&libraries=places`;
+        `?key=${this.googleMapsApiKey}&libraries=places`;
       script.async = true;
       script.defer = true;
 

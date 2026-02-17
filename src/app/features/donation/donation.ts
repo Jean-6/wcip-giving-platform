@@ -1,6 +1,6 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { NgIf} from '@angular/common';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MyStripeService} from './service/my-stripe-service';
 import {AlertService} from '../../core/services/alert-service';
 import {Dialog} from 'primeng/dialog';
@@ -32,7 +32,7 @@ declare const google: any;
   styleUrl: './donation.css',
   standalone: true
 })
-export class Donation implements OnInit{
+export class Donation implements OnInit, AfterViewInit{
 
   infoForm!: FormGroup;
   paymentMethod: PaymentMethod = 'STRIPE_CHECKOUT';
@@ -45,9 +45,20 @@ export class Donation implements OnInit{
   maxDate!: Date;
   reportForm!: FormGroup;
 
+
+  readonly amountPattern = /^[1-9]\d*(?:[.,]\d{1,2})?$/;
+  readonly frenchPhonePattern = /^0[1-9]\d{8}$/;
+
+
+
   @ViewChild('cardNumberEl') cardNumberEl!: ElementRef;
   @ViewChild('cardExpiryEl') cardExpiryEl!: ElementRef;
   @ViewChild('cardCvcEl') cardCvcEl!: ElementRef;
+
+
+  @ViewChild('addressInput') addressInput!: ElementRef;
+  selectedAddress: string | null = null;
+  isGoogleAddressSelected = false;
 
 
   constructor(private readonly fb: FormBuilder,
@@ -57,45 +68,68 @@ export class Donation implements OnInit{
               private readonly googleMapsLoader: GoogleMapsLoaderService
   ) {
     this.infoForm = this.fb.group({
-      amount: ['', [Validators.required, Validators.min(1), Validators.pattern(/^[0-9]+$/)]],
-      reason: ['', Validators.required],
-      firstname: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/)]],
-      lastname: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{8,15}$/)]], // Selon pays
-      address: ['', [Validators.required]]
+      amount: ['',
+        [
+          Validators.required,
+          Validators.min(1),
+          Validators.pattern(this.amountPattern)
+        ]
+      ],
+      reason: ['',
+        Validators.required
+      ],
+      firstname: ['',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/)
+        ]
+      ],
+      lastname: ['',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.pattern(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/)
+        ]
+      ],
+      email: ['',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
+      phone: ['',
+        [
+          Validators.required,
+          Validators.pattern(this.frenchPhonePattern)
+        ]
+      ], // Selon pays
+      address: ['',
+        [
+          Validators.required,this.addressValidator.bind(this)
+        ]
+      ]
     });
 
     this.reportForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      minDate:['', [Validators.required]],
-      maxDate:['', [Validators.required]],
+      email: ['',
+        [
+          Validators.required,
+          Validators.email
+        ]
+      ],
+      minDate:['',
+        [
+          Validators.required
+        ]
+      ],
+      maxDate:['',
+        [
+          Validators.required
+        ]
+      ],
     },
       { validators: minMaxDateValidator})
-  }
-
-
-  @ViewChild('addressInput')
-  set address(el: ElementRef<HTMLInputElement> | undefined) {
-    if (!el) return;
-
-    this.googleMapsLoader.load().then(() => {
-      const autocomplete = new google.maps.places.Autocomplete(
-        el.nativeElement,
-        {
-          types: ['address'],
-          componentRestrictions: {country: 'fr'},
-          fields: ['formatted_address', 'address_components', 'geometry']
-        });
-
-      autocomplete.addListener('place_changed', () => {
-        const place = autocomplete.getPlace();
-        if (!place?.formatted_address) return;
-
-        this.infoForm.patchValue({address: place.formatted_address});
-
-      });
-    });
   }
 
   selectPaymentMethod(method: PaymentMethod) {
@@ -110,8 +144,6 @@ export class Donation implements OnInit{
   closePanel() {
     this.selectedPanel = null;
   }
-
-
 
   /**
    * Called by p-dialog (onShow)
@@ -253,9 +285,7 @@ export class Donation implements OnInit{
     this.infoForm.reset()
   }
 
-  submitReportForm() {
-
-  }
+  submitReportForm() {}
 
   ngOnInit(): void {
     this.setYearLimits();
@@ -269,6 +299,40 @@ export class Donation implements OnInit{
     this.minDate = new Date(year,0,1);
     this.maxDate = today
 
+  }
+
+  ngAfterViewInit(): void {
+    this.googleMapsLoader.load().then(() => {
+      const autoComplete = new google.maps.places.Autocomplete(
+        this.addressInput.nativeElement,
+        { types: ['address'], componentRestrictions: { country: 'fr' }} );
+      autoComplete.addListener('place_changed', () => {
+      const place = autoComplete.getPlace();
+      this.onAddressSelected(place); });
+    });
+  }
+
+  onAddressSelected(place: google.maps.places.PlaceResult){
+    if (!place.formatted_address) {
+      this.isGoogleAddressSelected = false;
+      this.infoForm.get('address')?.setErrors({ notGoogleAddress: true });
+      return;
+    }
+
+    this.selectedAddress = place.formatted_address;
+    this.isGoogleAddressSelected = true;
+
+    this.infoForm.patchValue({ address: this.selectedAddress });
+    this.infoForm.get('address')?.setErrors(null);
+    this.infoForm.get('address')?.updateValueAndValidity();
+  }
+
+
+  addressValidator(control: AbstractControl) {
+    if (control.value && !this.isGoogleAddressSelected) {
+      return { notGoogleAddress: true };
+    }
+    return null;
   }
 
 }
