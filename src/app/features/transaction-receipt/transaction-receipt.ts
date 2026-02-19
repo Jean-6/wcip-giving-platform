@@ -57,9 +57,7 @@ export class TransactionReceipt implements OnInit{
 
   get createdDate(): number | null {
     return this.session?.createdAt
-      ? this.session.createdAt * 1000
+      ? new Date(this.session.createdAt).getTime()
       : null;
   }
-
-
 }

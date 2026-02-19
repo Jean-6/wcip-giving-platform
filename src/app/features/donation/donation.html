@@ -24,22 +24,22 @@
       <div>
         <div class="">
           <h2 class="text-3xl font-semibold leading-tight uppercase">
-            Winners Chapel - Paris<br/> Plateforme de dons
+            Winners Chapel Intl - Paris<br/> Plateforme de dons
           </h2>
         </div>
         <!-- Giving Options -->
-        <div class="space-y-14">
+        <div class="space-y-16">
           <div class="">
-            <h2 class="uppercase text-sm font-semibold py-1 tracking-wide">local</h2>
+            <h2 class="uppercase text-sm font-semibold py-4 tracking-wide">local</h2>
             <div class="flex gap-3">
-              <button
+              <!--<button
                 type="button"
                 (click)="selectPaymentMethod('CARD_DIRECT')"
                 [class.bg-red-600]="paymentMethod === 'CARD_DIRECT'"
                 [class.text-white]="paymentMethod === 'CARD_DIRECT'"
                 class="btn-outline uppercase font-semibold transition">
                 Paiement Direct
-              </button>
+              </button>-->
 
               <button
                 type="button"
@@ -53,12 +53,11 @@
             </div>
           </div>
           <div>
-            <h2 class="uppercase text-sm font-semibold py-1 tracking-wide">international</h2>
+            <!--<h2 class="uppercase text-sm font-semibold py-1 tracking-wide">international</h2>
             <div class="flex gap-3">
-
               <button class="btn-outline uppercase border-gray-200 font-semibold opacity-50 cursor-not-allowed pointer-events-none">Carte bancaire</button>
               <button class="btn-outline uppercase border-gray-200 font-semibold opacity-50 cursor-not-allowed pointer-events-none">Virement bancaire</button>
-            </div>
+            </div>-->
           </div>
 
           <div>
@@ -236,9 +235,17 @@
             formControlName="address"
           />
           <div
-            *ngIf="infoForm.get('address')?.invalid && infoForm.get('address')?.touched"
+            *ngIf="infoForm.get('address')?.errors?.['required']
+          && infoForm.get('address')?.touched"
             class="text-red-500 text-xs">
             Champ obligatoire
+          </div>
+
+          <div
+            *ngIf="infoForm.get('address')?.errors?.['notGoogleAddress']
+          && infoForm.get('address')?.touched"
+            class="text-red-500 text-xs">
+            Veuillez sélectionner une adresse dans les suggestions Google
           </div>
         </div>
         <!-- Submit -->

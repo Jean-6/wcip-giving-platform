@@ -45,11 +45,8 @@ export class Donation implements OnInit, AfterViewInit{
   maxDate!: Date;
   reportForm!: FormGroup;
 
-
   readonly amountPattern = /^[1-9]\d*(?:[.,]\d{1,2})?$/;
   readonly frenchPhonePattern = /^0[1-9]\d{8}$/;
-
-
 
   @ViewChild('cardNumberEl') cardNumberEl!: ElementRef;
   @ViewChild('cardExpiryEl') cardExpiryEl!: ElementRef;
@@ -57,10 +54,6 @@ export class Donation implements OnInit, AfterViewInit{
 
 
   @ViewChild('addressInput') addressInput!: ElementRef;
-  selectedAddress: string | null = null;
-  isGoogleAddressSelected = false;
-
-
   constructor(private readonly fb: FormBuilder,
               private readonly stripeService: MyStripeService,
               private readonly paymentService: PaymentService,
@@ -103,10 +96,10 @@ export class Donation implements OnInit, AfterViewInit{
           Validators.required,
           Validators.pattern(this.frenchPhonePattern)
         ]
-      ], // Selon pays
+      ],
       address: ['',
         [
-          Validators.required,this.addressValidator.bind(this)
+          Validators.required ,this.addressValidator.bind(this)
         ]
       ]
     });
@@ -173,12 +166,10 @@ export class Donation implements OnInit, AfterViewInit{
 
   onStripeDialogHide() {
     //this.stripeService.unmountAll();
-  }
-
+    }
 
 
   submit() {
-
 
     if(!this.paymentMethod){
       this.alert.warn("Merci de selection un mode de paiement")
@@ -222,7 +213,6 @@ export class Donation implements OnInit, AfterViewInit{
     this.paymentService.createCheckoutSession(payload)
       .subscribe({
         next: ( res: ResponseWrapper<CheckoutSessionResponse>) => {
-
           globalThis.location.href = res.data.url; // Redirect to stripe
         },
         error: () => {
@@ -237,10 +227,8 @@ export class Donation implements OnInit, AfterViewInit{
   payDirect() {
     if (this.isLoading) return;
     this.isLoading = true;
-
     const amount = this.infoForm.value.amount * 100;
     const addressParsed = this.googleMapsLoader.parseAddress(this.infoForm.value.address)
-
     const payload: CheckoutSessionRequest = {
       clientSecret: undefined,
       amount: amount,
@@ -292,10 +280,8 @@ export class Donation implements OnInit, AfterViewInit{
   }
 
   setYearLimits(){
-
     const today = new Date();
     const year = today.getFullYear();
-
     this.minDate = new Date(year,0,1);
     this.maxDate = today
 
@@ -305,32 +291,31 @@ export class Donation implements OnInit, AfterViewInit{
     this.googleMapsLoader.load().then(() => {
       const autoComplete = new google.maps.places.Autocomplete(
         this.addressInput.nativeElement,
-        { types: ['address'], componentRestrictions: { country: 'fr' }} );
+        {
+          types: ['address'],
+          componentRestrictions: { country: 'fr' }
+        } );
       autoComplete.addListener('place_changed', () => {
       const place = autoComplete.getPlace();
-      this.onAddressSelected(place); });
+      this.onAddressSelected(place);
+      });
     });
   }
 
   onAddressSelected(place: google.maps.places.PlaceResult){
+    const control = this.infoForm.get('address');
     if (!place.formatted_address) {
-      this.isGoogleAddressSelected = false;
-      this.infoForm.get('address')?.setErrors({ notGoogleAddress: true });
+      control?.setErrors({ notGoogleAddress: true });
       return;
     }
-
-    this.selectedAddress = place.formatted_address;
-    this.isGoogleAddressSelected = true;
-
-    this.infoForm.patchValue({ address: this.selectedAddress });
-    this.infoForm.get('address')?.setErrors(null);
-    this.infoForm.get('address')?.updateValueAndValidity();
+    control?.setValue(place.formatted_address);
+    control?.setErrors(null);
   }
 
 
   addressValidator(control: AbstractControl) {
-    if (control.value && !this.isGoogleAddressSelected) {
-      return { notGoogleAddress: true };
+    if (!control.value) {
+      return { required: true };
     }
     return null;
   }
