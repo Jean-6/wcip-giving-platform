@@ -32,14 +32,6 @@
           <div class="">
             <h2 class="uppercase text-sm font-semibold py-4 tracking-wide">local</h2>
             <div class="flex gap-3">
-              <!--<button
-                type="button"
-                (click)="selectPaymentMethod('CARD_DIRECT')"
-                [class.bg-red-600]="paymentMethod === 'CARD_DIRECT'"
-                [class.text-white]="paymentMethod === 'CARD_DIRECT'"
-                class="btn-outline uppercase font-semibold transition">
-                Paiement Direct
-              </button>-->
 
               <button
                 type="button"
@@ -53,11 +45,6 @@
             </div>
           </div>
           <div>
-            <!--<h2 class="uppercase text-sm font-semibold py-1 tracking-wide">international</h2>
-            <div class="flex gap-3">
-              <button class="btn-outline uppercase border-gray-200 font-semibold opacity-50 cursor-not-allowed pointer-events-none">Carte bancaire</button>
-              <button class="btn-outline uppercase border-gray-200 font-semibold opacity-50 cursor-not-allowed pointer-events-none">Virement bancaire</button>
-            </div>-->
           </div>
 
           <div>
@@ -66,7 +53,7 @@
               <button (click)="openPanel('support')"
                       class="btn-outline uppercase border-gray-200 font-semibold">Support
               </button>
-              <button (click)="openPanel('facture')"
+              <button (click)="openPanel('report')"
                       class="btn-outline uppercase border-gray-200 font-semibold">Rapport
               </button>
               <button (click)="openPanel('update')"
@@ -282,170 +269,15 @@
     <div class="p-6 overflow-y-auto flex-1">
       <!---->
 
-      <div *ngIf="selectedPanel === 'support'" class="space-y-6">
+      <ng-container [ngSwitch]="selectedPanel">
+        <app-support-panel *ngSwitchCase="'support'"></app-support-panel>
+        <app-update-panel *ngSwitchCase="'update'"></app-update-panel>
 
-        <h2 class="text-2xl font-bold text-gray-800">Support</h2>
-
-        <!-- Bloc principal -->
-        <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100 space-y-4">
-
-          <h3 class="text-lg font-semibold text-gray-900">Vous rencontrez un problème ?</h3>
-
-          <p class="text-gray-600 leading-relaxed">
-            Merci de nous décrire votre situation (erreur rencontrée, moyen de paiement utilisé, montant, etc.).
-            Notre équipe vous répondra dans les plus brefs délais.
-          </p>
-
-          <!-- Contact -->
-          <div class="space-y-4 pt-2">
-
-            <!-- Email -->
-            <div class="flex items-start gap-3">
-              <span class="text-blue-600 text-xl">📧</span>
-              <div>
-                <p class="text-sm text-gray-500">Email</p>
-                <p class="text-gray-800 font-medium">support@tonéglise.com</p>
-              </div>
-            </div>
-
-            <!-- Téléphone -->
-            <div class="flex items-start gap-3">
-              <span class="text-blue-600 text-xl">📞</span>
-              <div>
-                <p class="text-sm text-gray-500">Téléphone</p>
-                <p class="text-gray-800 font-medium">+33 XX XX XX XX XX</p>
-              </div>
-            </div>
-            <!-- Horaires -->
-            <div class="flex items-start gap-3">
-              <span class="text-blue-600 text-xl">🕒</span>
-              <div>
-                <p class="text-sm text-gray-500">Disponibilité</p>
-                <p class="text-gray-800 font-medium">Lundi – Samedi, 9h à 19h</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- -->
-      <div *ngIf="selectedPanel === 'facture'" class="space-y-6 ">
-        <h2 class="text-2xl font-bold text-gray-800">Obtenir un rapport</h2>
-          <div class="max-w-4xl bg-white rounded-2xl shadow-sm border border-gray-100 p-8 ">
-            <p class="text-gray-700 leading-relaxed mb-3">
-              Veuillez fournir l’adresse e‑mail utilisée sur la plateforme.
-              Le rapport demandé sera envoyé à cette même adresse.
-            </p>
-
-
-            <form
-              [formGroup]="reportForm"
-              (ngSubmit)="submitReportForm()">
-              <!-- Email -->
-              <div class="space-y-1">
-                <label for="electronicMsg" class="text-xs font-bold text-gray-800">Messagerie électronique</label>
-                <input
-                  id="electronicMsg"
-                  type="email"
-                  formControlName="email"
-                  class="w-full px-4 py-2 border border-gray-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all text-gray-900"
-                  placeholder=""/>
-                <div *ngIf="reportForm.get('email')?.invalid && reportForm.get('email')?.touched" class="text-red-500 text-xs"> </div>
-              </div>
-
-              <!-- Dates -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-1">
-                  <div>  <label for="minDate" class="text-xs font-bold text-gray-800">Date de début</label></div>
-                  <p-datePicker
-                    id="minDate"
-                    formControlName="minDate"
-                    fluid  class="w-full"
-                    dateFormat="dd-mm-yy"
-                    [showIcon]="true"/>
-                  <div *ngIf="reportForm.get('minDate')?.invalid && reportForm.get('minDate')?.touched" class="text-red-500 text-xs"> </div>
-                </div>
-                <div class="space-y-1">
-                  <div> <label for="maxDate" class="text-xs font-bold text-gray-800">Date de fin</label></div>
-                  <p-datePicker
-                    id="maxDate"
-                    formControlName="maxDate"
-                    fluid class="w-full"
-                    dateFormat="dd-mm-yy"
-                    [showIcon]="true"/>
-                  <div *ngIf="reportForm.get('maxDate')?.invalid && reportForm.get('maxDate')?.touched" class="text-red-500 text-xs"> </div>
-                </div>
-
-                <div *ngIf="reportForm.errors?.['minGreaterThanMax']"  class="text-red-500 text-xs">
-                  La date minimale ne peut pas depasser la date maximale
-                </div>
-              </div>
-              <!-- Submit -->
-              <button
-                [class.cursor-not-allowed]="reportForm.invalid"
-                [class.bg-red-600]="reportForm.valid"
-                [class.bg-gray-400]="reportForm.invalid"
-                [disabled]="reportForm.invalid"
-                class="w-full py-2 mt-5 text-white transition-all  " >
-                Envoyer une demande
-              </button>
-            </form>
-          </div>
-      </div>
-
-
-      <!-- -->
-
-      <div *ngIf="selectedPanel === 'update'" class="space-y-6">
-        <h2 class="text-2xl font-bold text-gray-800">Mise à jour</h2>
-        <!-- Paiements par carte -->
-        <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">Cartes de crédit et de débit</h3>
-          <p class="text-gray-600 leading-relaxed">
-            Tous les canaux de paiement acceptent les cartes de débit et de crédit.
-          </p>
-        </div>
-        <!-- Local -->
-        <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">Local</h3>
-
-          <ul class="space-y-2 text-gray-700">
-            <li class="text-gray-700 leading-relaxed">
-              <span class="font-semibold text-gray-900">Toutes les cartes</span> sont acceptées, quel que soit le canal choisi :
-              <div class="flex flex-wrap gap-2 mt-2">
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-sm">Visa</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-sm">Mastercard</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-sm">American Express</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-sm">Discover</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-sm">Diners Club</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-sm">JCB</span>
-                <span class="px-2 py-1 bg-gray-100 text-gray-800 rounded-md text-sm">UnionPay</span>(selon les régions)
-              </div>
-              <span class="text-gray-500 text-sm"></span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Confidentialité -->
-        <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-          <h3 class="text-lg font-semibold text-gray-900 mb-3">Aucune connexion requise & confidentialité</h3>
-          <p class="text-gray-600 leading-relaxed">
-            Lorsque vous visitez la page de dons, certains détails sont nécessaires. Ces informations sont
-            <span class="font-medium text-gray-800">stockées uniquement sur votre appareil</span> et servent à référencer votre don.
-          </p>
-          <p class="text-gray-600 leading-relaxed mt-2">
-            Votre rapport est accessible via l’adresse e‑mail utilisée lors du don.
-          </p>
-        </div>
-        <!-- Support -->
-        <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">Support amélioré</h3>
-          <p class="text-gray-600 leading-relaxed">
-            Le support est disponible via les tickets et le chat en direct.
-          </p>
-        </div>
-      </div>
-
+        <app-report-panel
+          *ngSwitchCase="'report'"
+          (submitReport)="submitReportForm()">
+        </app-report-panel>
+      </ng-container>
     </div>
   </section>
 
@@ -541,8 +373,4 @@
     </div>
 
   </p-dialog>
-
-
 </div>
-
-<!--<input type="date" class="w-full px-4 py-2 border border-gray-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all text-gray-900" />-->

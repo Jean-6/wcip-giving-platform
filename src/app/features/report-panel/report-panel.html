@@ -1,0 +1,62 @@
+<div class="space-y-6 ">
+  <h2 class="text-2xl font-bold text-gray-800">Obtenir un rapport</h2>
+  <div class="max-w-4xl bg-white rounded-2xl shadow-sm border border-gray-100 p-8 ">
+    <p class="text-gray-700 leading-relaxed mb-3">
+      Veuillez fournir l’adresse e‑mail utilisée sur la plateforme. Le rapport demandé sera envoyé à cette même adresse.
+    </p>
+
+
+    <form
+      [formGroup]="reportForm"
+      (ngSubmit)="submitReportForm()">
+      <!-- Email -->
+      <div class="space-y-1">
+        <label for="electronicMsg" class="text-xs font-bold text-gray-800">Messagerie électronique</label>
+        <input
+          id="electronicMsg"
+          type="email"
+          formControlName="email"
+          class="w-full px-4 py-2 border border-gray-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all text-gray-900"
+          placeholder=""/>
+        <div *ngIf="reportForm.get('email')?.invalid && reportForm.get('email')?.touched" class="text-red-500 text-xs"> </div>
+      </div>
+
+      <!-- Dates -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="space-y-1">
+          <div>  <label for="minDate" class="text-xs font-bold text-gray-800">Date de début</label></div>
+          <p-datePicker
+            id="minDate"
+            formControlName="minDate"
+            fluid  class="w-full"
+            dateFormat="dd-mm-yy"
+            [showIcon]="true"/>
+          <div *ngIf="reportForm.get('minDate')?.invalid && reportForm.get('minDate')?.touched" class="text-red-500 text-xs"> </div>
+        </div>
+        <div class="space-y-1">
+          <div> <label for="maxDate" class="text-xs font-bold text-gray-800">Date de fin</label></div>
+          <p-datePicker
+            id="maxDate"
+            formControlName="maxDate"
+            fluid class="w-full"
+            dateFormat="dd-mm-yy"
+            [showIcon]="true"/>
+          <div *ngIf="reportForm.get('maxDate')?.invalid && reportForm.get('maxDate')?.touched" class="text-red-500 text-xs"> </div>
+        </div>
+
+        <div *ngIf="reportForm.errors?.['minGreaterThanMax']"  class="text-red-500 text-xs">
+          La date minimale ne peut pas depasser la date maximale
+        </div>
+      </div>
+      <!-- Submit -->
+      <button
+        [class.cursor-not-allowed]="reportForm.invalid"
+        [class.bg-red-600]="reportForm.valid"
+        [class.bg-gray-400]="reportForm.invalid"
+        [disabled]="reportForm.invalid"
+        class="w-full py-2 mt-5 text-white transition-all  " >
+        Envoyer une demande
+      </button>
+    </form>
+  </div>
+</div>

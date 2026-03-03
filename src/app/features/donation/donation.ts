@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import { NgIf} from '@angular/common';
+import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
 import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {MyStripeService} from './service/my-stripe-service';
 import {AlertService} from '../../core/services/alert-service';
@@ -7,12 +7,13 @@ import {Dialog} from 'primeng/dialog';
 import {PaymentService} from '../../services/payment-service';
 import {CheckoutSessionRequest} from '../../core/dtos/checkout-session-request';
 import {GoogleMapsLoaderService} from '../../core/services/google-maps-loader-service';
-import {DatePicker} from 'primeng/datepicker';
-import {minMaxDateValidator} from '../../shared/validator/min-max-date.validator';
 import {AutoFocus} from 'primeng/autofocus';
 import {ResponseWrapper} from '../../core/dtos/response-wrapper';
 import {CheckoutSessionResponse} from '../../core/dtos/checkout-session-response';
 import {Loader} from '../../shared/loader/loader';
+import {UpdatePanel} from '../update-panel/update-panel';
+import {SupportPanel} from '../support-panel/support-panel';
+import {ReportPanel} from '../report-panel/report-panel';
 
 
 declare const google: any;
@@ -24,9 +25,13 @@ declare const google: any;
     ReactiveFormsModule,
     Dialog,
     FormsModule,
-    DatePicker,
     AutoFocus,
     Loader,
+    UpdatePanel,
+    NgSwitch,
+    NgSwitchCase,
+    SupportPanel,
+    ReportPanel,
   ],
   templateUrl: './donation.html',
   styleUrl: './donation.css',
@@ -36,14 +41,15 @@ export class Donation implements OnInit, AfterViewInit{
 
   infoForm!: FormGroup;
   paymentMethod: PaymentMethod = 'STRIPE_CHECKOUT';
+  reportForm!: FormGroup;
 
-  selectedPanel: 'support' | 'facture' | 'update' | 'stripe' | null = null;
+  selectedPanel: 'support' | 'report' | 'update' | 'stripe' | null = null;
   showStripeDialog = false;
   private cardMounted = false;
   isLoading = false;
   minDate!: Date;
   maxDate!: Date;
-  reportForm!: FormGroup;
+
 
   readonly amountPattern = /^[1-9]\d*(?:[.,]\d{1,2})?$/;
   readonly frenchPhonePattern = /^0[1-9]\d{8}$/;
@@ -54,6 +60,11 @@ export class Donation implements OnInit, AfterViewInit{
 
 
   @ViewChild('addressInput') addressInput!: ElementRef;
+
+  ngOnInit(): void {
+    this.setYearLimits();
+  }
+
   constructor(private readonly fb: FormBuilder,
               private readonly stripeService: MyStripeService,
               private readonly paymentService: PaymentService,
@@ -103,26 +114,6 @@ export class Donation implements OnInit, AfterViewInit{
         ]
       ]
     });
-
-    this.reportForm = this.fb.group({
-      email: ['',
-        [
-          Validators.required,
-          Validators.email
-        ]
-      ],
-      minDate:['',
-        [
-          Validators.required
-        ]
-      ],
-      maxDate:['',
-        [
-          Validators.required
-        ]
-      ],
-    },
-      { validators: minMaxDateValidator})
   }
 
   selectPaymentMethod(method: PaymentMethod) {
@@ -130,7 +121,7 @@ export class Donation implements OnInit, AfterViewInit{
   }
 
 
-  openPanel(type: 'support' | 'facture' | 'update') {
+  openPanel(type: 'support' | 'report' | 'update') {
     this.selectedPanel = type;
   }
 
@@ -273,11 +264,6 @@ export class Donation implements OnInit, AfterViewInit{
     this.infoForm.reset()
   }
 
-  submitReportForm() {}
-
-  ngOnInit(): void {
-    this.setYearLimits();
-  }
 
   setYearLimits(){
     const today = new Date();
@@ -320,4 +306,9 @@ export class Donation implements OnInit, AfterViewInit{
     return null;
   }
 
+
+
+  submitReportForm(){
+
+  }
 }
