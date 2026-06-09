@@ -15,7 +15,6 @@ import {UpdatePanel} from '../update-panel/update-panel';
 import {SupportPanel} from '../support-panel/support-panel';
 import {ReportPanel} from '../report-panel/report-panel';
 
-
 declare const google: any;
 
 @Component({
@@ -153,14 +152,14 @@ export class Donation implements OnInit, AfterViewInit{
   /**
    * Called by p-dialog (onHide)
    */
-
-
   onStripeDialogHide() {
     //this.stripeService.unmountAll();
     }
 
 
   submit() {
+
+    console.log('submit!');
 
     if(!this.paymentMethod){
       this.alert.warn("Merci de selection un mode de paiement")
@@ -177,14 +176,12 @@ export class Donation implements OnInit, AfterViewInit{
       this.redirectToCheckout();
       return;
     }
-    if(this.paymentMethod === 'CARD_DIRECT'){
-      this.cardMounted = false;
-      this.showStripeDialog = true;
-      this.isLoading = false;
-    }
 
   }
   redirectToCheckout() {
+
+    console.log('redirectToCheckout');
+
     this.isLoading = true;
 
     const payload: CheckoutSessionRequest = {
@@ -201,9 +198,12 @@ export class Donation implements OnInit, AfterViewInit{
       idempotencyKey: crypto.randomUUID()
     };
 
+    console.log("redirect to : " + payload);
+
     this.paymentService.createCheckoutSession(payload)
       .subscribe({
         next: ( res: ResponseWrapper<CheckoutSessionResponse>) => {
+          console.log("Into subscribe : "+ res.data.url);
           globalThis.location.href = res.data.url; // Redirect to stripe
         },
         error: () => {
@@ -213,52 +213,6 @@ export class Donation implements OnInit, AfterViewInit{
       });
 
   }
-
-
-  payDirect() {
-    if (this.isLoading) return;
-    this.isLoading = true;
-    const amount = this.infoForm.value.amount * 100;
-    const addressParsed = this.googleMapsLoader.parseAddress(this.infoForm.value.address)
-    const payload: CheckoutSessionRequest = {
-      clientSecret: undefined,
-      amount: amount,
-      currency: 'eur',
-      reason: this.infoForm.value.reason,
-      billingDetails: {
-        firstname: this.infoForm.value.firstname,
-        lastname: this.infoForm.value.lastname,
-        email: this.infoForm.value.email,
-        phone: this.infoForm.value.phone,
-        address: addressParsed
-      },
-      idempotencyKey: crypto.randomUUID()
-    };
-
-    console.log("payDirect: {}", payload)
-
-    // Sending backend
-    this.paymentService.createPaymentIntent(payload)
-      .subscribe({
-        next: (res:ResponseWrapper<CheckoutSessionRequest>) => {
-
-          payload.clientSecret = res.data.clientSecret;
-
-          // Stripe Confirmation
-          this.stripeService.confirmPayment$(payload)
-            .subscribe(result => {
-              this.isLoading = false;
-
-            });
-        },
-        error: err => {
-          this.isLoading = false;
-          console.error(err);
-          this.alert.error('Erreur lors du paiement');
-        }
-      });
-  }
-
 
   private resetForm() {
     this.infoForm.reset()
@@ -306,9 +260,5 @@ export class Donation implements OnInit, AfterViewInit{
     return null;
   }
 
-
-
-  submitReportForm(){
-
-  }
+  submitReportForm(){}
 }

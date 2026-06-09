@@ -33,21 +33,20 @@ export class TransactionReceipt implements OnInit{
   ) {}
 
   ngOnInit(): void {
-
     this.isLoading = true
     this.route.queryParams.subscribe(params => {
       const sessionId = params['session_id'];
-      this.paymentService.getSession(sessionId).subscribe({
-        next: (res: ResponseWrapper<Session>) =>{
+      this.paymentService.verifyPayment(sessionId).subscribe({
+        next: (res: ResponseWrapper<Session>) => {
           this.session = res.data;
-          console.log(this.session)
-          this.isLoading =false;
+          console.log("transaction receipt", this.session);
+          this.isLoading = false;
         },
-        error: () =>{
-          this.isLoading = true;
-          this.alert.error('Erreur lors du chargement de session');
+        error: () => {
+          this.isLoading = false;
+          this.alert.error('Error retrieving payment session');
         }
-      });
+      })
     });
   }
 
