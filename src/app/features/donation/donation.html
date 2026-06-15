@@ -275,7 +275,7 @@
 
         <app-report-panel
           *ngSwitchCase="'report'"
-          (submitReport)="submitReportForm()">
+          (submitReport)="onSubmit($event)">
         </app-report-panel>
       </ng-container>
     </div>

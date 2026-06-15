@@ -47,6 +47,21 @@ export class ReportPanel {
   }
 
 
-  submitReportForm() {}
+  submitReportForm() {
+
+    if (this.reportForm.invalid) {
+      this.reportForm.markAllAsTouched();
+      return;
+    }
+
+    const payload = {
+      email: this.reportForm.value.email,
+      startDate : this.reportForm.value.minDate,
+      endDate: this.reportForm.value.maxDate
+    }
+
+    this.submitReport.emit(payload);
+
+  }
 
 }

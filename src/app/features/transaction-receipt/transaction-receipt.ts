@@ -51,7 +51,7 @@ export class TransactionReceipt implements OnInit{
   }
 
   get amountInEuro(): number{
-    return (this.session?.amountTotal ?? 0) / 100;
+    return (this.session?.amount_total ?? 0) / 100;
   }
 
   get createdDate(): number | null {

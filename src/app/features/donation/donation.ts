@@ -14,6 +14,7 @@ import {Loader} from '../../shared/loader/loader';
 import {UpdatePanel} from '../update-panel/update-panel';
 import {SupportPanel} from '../support-panel/support-panel';
 import {ReportPanel} from '../report-panel/report-panel';
+import {ReceiptService} from '../../services/receipt-service';
 
 declare const google: any;
 
@@ -68,7 +69,8 @@ export class Donation implements OnInit, AfterViewInit{
               private readonly stripeService: MyStripeService,
               private readonly paymentService: PaymentService,
               private readonly alert: AlertService,
-              private readonly googleMapsLoader: GoogleMapsLoaderService
+              private readonly googleMapsLoader: GoogleMapsLoaderService,
+              private readonly receiptService: ReceiptService
   ) {
     this.infoForm = this.fb.group({
       amount: ['',
@@ -178,12 +180,23 @@ export class Donation implements OnInit, AfterViewInit{
     }
 
   }
+
+  generateUUID(): string {
+    // Check if the native browser crypto and randomUUID are available
+    if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+
+    // Fallback math-based UUIDv4 generator (if context is not secure)
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  }
   redirectToCheckout() {
 
-    console.log('redirectToCheckout');
-
     this.isLoading = true;
-
     const payload: CheckoutSessionRequest = {
       amount: this.infoForm.value.amount * 100,
       currency: 'eur',
@@ -195,10 +208,11 @@ export class Donation implements OnInit, AfterViewInit{
         phone: this.infoForm.value.phone,
         address: this.googleMapsLoader.parseAddress(this.infoForm.value.address)
       },
-      idempotencyKey: crypto.randomUUID()
+      idempotencyKey: this.generateUUID()
+      //crypto.randomUUID()
     };
 
-    console.log("redirect to : " + payload);
+    console.log("redirect to : " , payload);
 
     this.paymentService.createCheckoutSession(payload)
       .subscribe({
@@ -260,5 +274,20 @@ export class Donation implements OnInit, AfterViewInit{
     return null;
   }
 
-  submitReportForm(){}
+  onSubmit(payload: any) {
+
+    console.log(payload);
+
+    this.receiptService.sendReceipt(payload).subscribe({
+      next: (res) => {
+        console.log("Receipt sent ✅", res);
+        alert("Reçu envoyé par email !");
+      },
+      error: (err) => {
+        console.error(err);
+        alert("Erreur lors de l'envoi ❌");
+      }
+    });
+
+  }
 }

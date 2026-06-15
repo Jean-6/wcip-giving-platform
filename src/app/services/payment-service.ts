@@ -20,6 +20,11 @@ export class PaymentService {
   constructor(private readonly http: HttpClient,
               private authService: AuthService) {}
 
+  createCheckoutSession(payload: CheckoutSessionRequest): Observable<ResponseWrapper<CheckoutSessionResponse>>{
+    console.log("createCheckoutSession :", this.API_URL);
+    return this.http.post<ResponseWrapper<CheckoutSessionResponse>>(`${this.API_URL}/api/payment/create-session`, payload);
+  }
+
   createPaymentIntent(payload: CheckoutSessionRequest) : Observable<ResponseWrapper<CheckoutSessionRequest>>{
     return this.http.post<ResponseWrapper<CheckoutSessionRequest>>(`${this.API_URL}/api/payment/`,payload);
   }
@@ -28,9 +33,6 @@ export class PaymentService {
     return this.http.get<ResponseWrapper<Intent>>(`${this.API_URL}/api/stripe/payment-intent/${id}`);
   }
 
-  createCheckoutSession(payload: CheckoutSessionRequest): Observable<ResponseWrapper<CheckoutSessionResponse>>{
-    return this.http.post<ResponseWrapper<CheckoutSessionResponse>>(`${this.API_URL}/api/payment/create-session`, payload);
-  }
 
   verifyPayment(sessionId: string): Observable<ResponseWrapper<Session>>{
     return this.http.get<ResponseWrapper<Session>>(`${this.API_URL}/api/payment/verify/${sessionId}`);

@@ -2,9 +2,9 @@
 
 export interface Session {
   id: string,
-  amountTotal: number,
-  paymentStatus: string,
-  customerEmail: string,
+  amount_total: number,
+  payment_status: string,
+  customer_email: string,
   url: string,
   createdAt: string
 }
