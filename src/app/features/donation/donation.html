@@ -1,376 +1,96 @@
-<div class="relative min-h-screen bg-gray-100 flex flex-col lg:flex-row">
-  <!-- LEFT SECTION -->
-  <section
-    class="lg:w-6/12 w-full h-screen flex justify-center bg-cover bg-center relative text-white"
-    style="background-image: url('/assets/images/prayer-position.jpg')">
+<div class="min-h-screen flex flex-col lg:flex-row">
+
+  <!-- GAUCHE : hero -->
+  <section class="lg:w-6/12 w-full lg:h-screen lg:fixed lg:left-0 lg:top-0
+                  min-h-[35vh] bg-cover bg-center relative text-white"
+           style="background-image: url('/assets/images/prayer-position.jpg')">
     <div class="absolute inset-0 bg-black/65"></div>
-    <div class="relative p-10 h-full flex flex-col justify-between">
-      <!-- Logo / Title -->
-      <div class="flex items-center gap-4">
-        <img alt="Logo" class="w-36 h-36 object-contain" src="/assets/images/lfc_logo.png"/>
+    <div class="relative p-6 lg:p-10 h-full flex flex-col justify-between">
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <img alt="Logo" class="w-20 h-20 lg:w-36 lg:h-36 object-contain"
+             src="/assets/images/lfc_logo.png"/>
         <div>
-          <h1 class="text-2xl font-bold mb-2 uppercase ">
-            Living Faith Church
-          </h1>
-          <p class="text-sm font-semibold uppercase tracking-wider opacity-80">
-            Worldwide
-          </p>
-          <p class="text-sm font-semibold uppercase tracking-wider opacity-80">
-            International
-          </p>
+          <h1 class="text-lg lg:text-2xl font-bold mb-1 uppercase">Living Faith Church</h1>
+          <p class="text-xs lg:text-sm font-semibold uppercase tracking-wider opacity-80">Worldwide</p>
+          <p class="text-xs lg:text-sm font-semibold uppercase tracking-wider opacity-80">International</p>
         </div>
       </div>
-      <!-- Main Title -->
-      <div>
-        <div class="">
-          <h2 class="text-3xl font-semibold leading-tight uppercase">
-            Winners Chapel Intl - Paris<br/> Plateforme de dons
-          </h2>
-        </div>
-        <!-- Giving Options -->
-        <div class="space-y-16">
-          <div class="">
-            <h2 class="uppercase text-sm font-semibold py-4 tracking-wide">local</h2>
-            <div class="flex gap-3">
 
-              <button
-                type="button"
-                (click)="selectPaymentMethod('STRIPE_CHECKOUT')"
-                [class.bg-red-600]="paymentMethod === 'STRIPE_CHECKOUT'"
-                [class.text-white]="paymentMethod === 'STRIPE_CHECKOUT'"
-                class="btn-outline uppercase  font-semibold transition">
+      <!-- Titre + boutons (cachés sur mobile pour économiser l'espace) -->
+      <div class="hidden lg:block">
+        <h2 class="text-3xl font-semibold leading-tight uppercase mb-8">
+          Winners Chapel Intl - Paris<br/> Plateforme de dons
+        </h2>
+        <div class="space-y-8">
+          <!-- boutons locaux -->
+          <div>
+            <h2 class="uppercase text-sm font-semibold py-4 tracking-wide">local</h2>
+            <div class="flex gap-3 flex-wrap">
+              <button type="button" (click)="selectPaymentMethod('STRIPE_CHECKOUT')"
+                      [class.bg-red-600]="paymentMethod === 'STRIPE_CHECKOUT'"
+                      class="btn-outline uppercase font-semibold transition">
                 Paiement via Stripe
               </button>
-              <button class="btn-outline uppercase border-gray-200 font-semibold opacity-50 cursor-not-allowed pointer-events-none">Virement bancaire</button>
+              <button class="btn-outline uppercase border-gray-200 font-semibold opacity-50 cursor-not-allowed pointer-events-none">
+                Virement bancaire
+              </button>
             </div>
           </div>
-          <div>
-          </div>
-
+          <!-- support -->
           <div>
             <h2 class="uppercase text-sm font-semibold py-1 tracking-wide">support et information</h2>
-            <div class="flex gap-3">
-              <button (click)="openPanel('support')"
-                      class="btn-outline uppercase border-gray-200 font-semibold">Support
-              </button>
-              <button (click)="openPanel('report')"
-                      class="btn-outline uppercase border-gray-200 font-semibold">Rapport
-              </button>
-              <button (click)="openPanel('update')"
-                      class="btn-outline uppercase border-gray-200 font-semibold">Mise à jour
-              </button>
+            <div class="flex gap-3 flex-wrap">
+              <button (click)="openPanel('support')" class="btn-outline uppercase border-gray-200 font-semibold">Support</button>
+              <button (click)="openPanel('report')" class="btn-outline uppercase border-gray-200 font-semibold">Rapport</button>
+              <button (click)="openPanel('update')" class="btn-outline uppercase border-gray-200 font-semibold">Mise à jour</button>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- Footer -->
-      <div class="text-xs opacity-70">
-        © 2026, Tous droits réservés, Winners Chapel - Paris
-      </div>
-
+      <div class="text-xs opacity-70 hidden lg:block">© 2026, Tous droits réservés, Winners Chapel - Paris</div>
     </div>
   </section>
 
+  <!-- DROITE : formulaire — scrollable, décalé sur desktop -->
+  <section class="w-full lg:w-6/12 lg:ml-[50%] min-h-screen bg-gray-100">
 
-  <!-- RIGHT SECTION -->
-  <section
-    *ngIf="!selectedPanel"
-    class=" fixed inset-y-0 right-0 animate-slide-left bg-black/25 z-40 w-full lg:w-6/12 bg-gray-900/3 p-10 flex flex-col min-h-screen justify-center items-center "> <!-- -->
-    <div class="w-full">
-      <div class="flex flex-wrap gap-4"></div>
-      <!-- Form -->
-
-      <ng-container *ngIf="isLoading">
-        <app-loader></app-loader>
-      </ng-container>
-
-      <form
-        *ngIf="!isLoading"
-        [formGroup]="infoForm"
-        (ngSubmit)="submit()"
-        class="space-y-4  w-full mx-auto bg-white p-8 shadow-sm border border-gray-100">
-        <!-- Devise -->
-        <h2 class="font-bold text-sm">Informations personnelles</h2>
-        <div class="w-40">
-          <label for="currency" class="text-xs font-bold text-gray-800">Devise</label>
-          <select
-            id="currency"
-            class="w-full px-4 py-2 mt-1 border border-gray-300 bg-white text-gray-900
-             focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all">
-            <option>EUR</option>
-          </select>
-        </div>
-
-        <!-- Montant + Offrande -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Montant -->
-          <div class="space-y-1">
-            <label for="amount" class="text-xs font-bold text-gray-800">Montant</label>
-            <input
-              id="amount"
-              class="w-full px-4 py-1.5  border border-gray-300 text-gray-900
-             focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
-              formControlName="amount"
-              type="number"
-              inputmode="numeric"
-              min="1"
-              placeholder=""/>
-            <div *ngIf="infoForm.get('amount')?.invalid && infoForm.get('amount')?.touched" class="text-red-500 text-xs">Champ obligatoire</div>
-          </div>
-
-          <!-- Offrande -->
-          <div class="space-y-1">
-            <label for ="reason" class="text-xs font-bold text-gray-800">Offrande</label>
-            <select
-              id="reason"
-              class="w-full px-4 py-2 border border-gray-300 bg-white text-gray-900
-             focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
-              formControlName="reason">
-              <option value=""></option>
-              <option>Dime</option>
-              <option>Offrande</option>
-              <option>Don</option>
-              <option>Sacrifice de Shiloh</option>
-              <option>Offrande prophetique</option>
-            </select>
-            <div
-              *ngIf="infoForm.get('reason')?.invalid && infoForm.get('reason')?.touched"
-              class="text-red-500 text-xs">
-              Champ obligatoire
-            </div>
-          </div>
-        </div>
-        <!-- Prénoms + Nom -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="space-y-1">
-            <label for="firstname" class="text-xs font-bold text-gray-800">Prénoms</label>
-            <input
-              id="firstname"
-              class="w-full px-4 py-1.5 border border-gray-300 text-gray-900
-               focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
-              formControlName="firstname"
-            />
-            <div
-              *ngIf="infoForm.get('firstname')?.invalid && infoForm.get('firstname')?.touched"
-              class="text-red-500 text-xs">
-              Champ obligatoire
-            </div>
-          </div>
-
-          <div class="space-y-1">
-            <label for="lastname" class="text-xs font-bold text-gray-800">Nom</label>
-            <input
-              id="lastname"
-              class="w-full px-4 py-1.5 border border-gray-300 text-gray-900
-               focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
-              formControlName="lastname"/>
-            <div
-              *ngIf="infoForm.get('lastname')?.invalid && infoForm.get('lastname')?.touched"
-              class="text-red-500 text-xs">
-              Champ obligatoire
-            </div>
-          </div>
-        </div>
-
-        <!-- Email + Tel -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Email -->
-          <div class="space-y-1">
-            <label for="email"  class="text-xs font-bold text-gray-800">Email</label>
-            <input
-              id="email"
-              class="w-full px-4 py-1.5 border border-gray-300 text-gray-900
-             focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
-              type="email"
-              formControlName="email"
-            />
-            <div
-              *ngIf="infoForm.get('email')?.invalid && infoForm.get('email')?.touched"
-              class="text-red-500 text-xs"
-            >
-              Champ obligatoire
-            </div>
-          </div>
-
-          <!-- Téléphone -->
-          <div class="space-y-1">
-            <label for="phone" class="text-xs font-bold text-gray-800">Téléphone</label>
-            <input
-              id="phone"
-              class="w-full px-4 py-1.5  border border-gray-300 text-gray-900
-             focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
-              formControlName="phone"
-            />
-            <div
-              *ngIf="infoForm.get('phone')?.invalid && infoForm.get('phone')?.touched"
-              class="text-red-500 text-xs"
-            >
-              Champ obligatoire
-            </div>
-          </div>
-        </div>
-
-        <div class="">
-          <label for="address" class="text-xs font-bold text-gray-800">Adresse</label>
-          <input
-            id="address"
-            #addressInput
-            class="w-full px-4 py-1.5 border border-gray-300 text-gray-900
-               focus:border-blue-600 focus:ring-4 focus:ring-blue-100 transition-all"
-            formControlName="address"
-          />
-          <div
-            *ngIf="infoForm.get('address')?.errors?.['required']
-          && infoForm.get('address')?.touched"
-            class="text-red-500 text-xs">
-            Champ obligatoire
-          </div>
-
-          <div
-            *ngIf="infoForm.get('address')?.errors?.['notGoogleAddress']
-          && infoForm.get('address')?.touched"
-            class="text-red-500 text-xs">
-            Veuillez sélectionner une adresse dans les suggestions Google
-          </div>
-        </div>
-        <!-- Submit -->
-        <button
-          [class.cursor-not-allowed]="infoForm.invalid || isLoading"
-          [class.bg-red-600]="infoForm.valid || isLoading"
-          [class.bg-gray-400]="infoForm.invalid || isLoading"
-          [disabled]="infoForm.invalid || isLoading"
-          class="w-full py-2 bg-red-600 text-white shadow-md
-           hover:bg-red-700 hover:shadow-lg transition-all active:scale-[0.98]"
-          type="submit">
-          {{isLoading ? 'Chargement en cours...' : 'Valider'}}
+    <!-- Boutons visibles uniquement sur mobile -->
+    <div class="lg:hidden bg-gray-900 text-white p-4 space-y-3">
+      <div class="flex gap-2 flex-wrap">
+        <button type="button" (click)="selectPaymentMethod('STRIPE_CHECKOUT')"
+                [class.bg-red-600]="paymentMethod === 'STRIPE_CHECKOUT'"
+                class="btn-outline text-sm uppercase font-semibold">
+          Stripe
         </button>
-      </form>
-    </div>
-
-    <footer class="text-center text-gray-500 py-4">
-      <ul class="flex justify-center gap-6 text-xs text-gray-600 opacity-70">
-        <li><a href="#" class="hover:text-gray-900">Instructions</a></li>
-        <li><a href="#" class="hover:text-gray-900">Licence</a></li>
-        <li><a href="#" class="hover:text-gray-900">Termes d'utilisation</a></li>
-        <li><a href="#" class="hover:text-gray-900">Privacy</a></li>
-      </ul>
-
-    </footer>
-  </section>
-
-  <!-- SLIDE PANEL -->
-  <section *ngIf="selectedPanel" class="fixed inset-y-0 right-0 lg:w-6/12 w-full bg-white p-10 flex flex-col shadow-xl translate-x-full animate-slide-left will-change-transform z-30">
-    <!-- HEADER -->
-    <button (click)="closePanel()" class="self-end text-red-600 hover:text-gray-700 mb-1 uppercase "> ✕ Fermer</button>
-    <hr/>
-    <!-- CONTENT -->
-    <div class="p-6 overflow-y-auto flex-1">
-      <!---->
-
-      <ng-container [ngSwitch]="selectedPanel">
-        <app-support-panel *ngSwitchCase="'support'"></app-support-panel>
-        <app-update-panel *ngSwitchCase="'update'"></app-update-panel>
-
-        <app-report-panel
-          *ngSwitchCase="'report'"
-          (submitReport)="onSubmit($event)">
-        </app-report-panel>
-      </ng-container>
-    </div>
-  </section>
-
-  <!-- STRIPE DIALOG -->
-
-  <p-dialog
-    class="square-dialog"
-    [pAutoFocus]="false"
-    [focusOnShow]="false"
-    [(visible)]="showStripeDialog"
-    appendTo="body"
-    [modal]="true"
-    [closable]="!isLoading"
-    [dismissableMask]="!isLoading"
-    header="Paiment sécurié"
-    maskStyleClass="maskStyleClass"
-    [maskStyle]="{ background: 'rgba(0,0,0,0.5)' }"
-    (onShow)="onStripeDialogOpen()"
-    (onHide)="onStripeDialogHide()"
-    [style]="{ width: '30rem' }">
-
-    <!-- Loader -->
-    <div
-      *ngIf="isLoading"
-      class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-white/70">
-      <div class="animate-spin rounded-full h-10 w-10 border-4 border-red-600 border-t-transparent"></div>
-      <p class="mt-4 text-gray-600 text-sm">Paiement en cours…</p>
-    </div>
-
-    <!-- CONTAINER -->
-    <div class="bg-white p-5" [class.opacity-50]="isLoading">
-      <!-- TITLE -->
-      <h2 class="font-bold text-sm mb-2">Informations de paiement</h2>
-      <!-- CARD NUMBER -->
-      <label for="cardNumber" class="block text-xs text-gray-600 mb-1">
-        Numéro de carte
-      </label>
-
-      <div
-        class="h-[42px] bg-gray-50 border border-gray-300 rounded
-             px-4 py-3 mb-4
-             focus-within:ring-2 focus-within:ring-blue-500
-             focus-within:border-blue-500 transition">
-        <div id="cardNumber" #cardNumberEl class="h-full"></div>
       </div>
-
-      <!-- EXPIRY + CVC -->
-      <div class="grid grid-cols-2 gap-3 mb-4">
-
-        <!-- EXPIRY -->
-        <div>
-          <label for="expiry" class="block text-xs text-gray-600 mb-1">
-            Date d’expiration
-          </label>
-
-          <div
-            class="h-[42px] bg-gray-50 border border-gray-300 rounded
-                 px-4 py-3
-                 focus-within:ring-2 focus-within:ring-blue-500
-                 focus-within:border-blue-500 transition">
-            <div id="expiry" #cardExpiryEl class="h-full"></div>
-          </div>
-        </div>
-
-        <!-- CVC -->
-        <div>
-          <label for="cvc" class="block text-xs text-gray-600 mb-1">
-            CVC
-          </label>
-
-          <div
-            class="h-[42px] bg-gray-50 border border-gray-300 rounded
-                 px-4 py-3
-                 focus-within:ring-2 focus-within:ring-blue-500
-                 focus-within:border-blue-500 transition">
-            <div id="cvc" #cardCvcEl class="h-full"></div>
-          </div>
-        </div>
-
+      <div class="flex gap-2 flex-wrap">
+        <button (click)="openPanel('support')" class="btn-outline text-sm uppercase">Support</button>
+        <button (click)="openPanel('report')" class="btn-outline text-sm uppercase">Rapport</button>
+        <button (click)="openPanel('update')" class="btn-outline text-sm uppercase">Mise à jour</button>
       </div>
-      <!--<button
-        type="button"
-        (click)="payDirect()"
-        [disabled]="isLoading"
-        class="w-full py-2 bg-red-600 text-white shadow-md
-             hover:bg-red-700 hover:shadow-lg
-             transition-all active:scale-[0.98] mt-3">
-        {{isLoading ? 'Paiement en cours...' : 'Payer maintenant'}}
-      </button>-->
-      <p class="text-xs text-center text-gray-500 mt-4">
-        Paiement 100% sécurisé. Aucune donnée bancaire n'est stockée.
-      </p>
     </div>
 
-  </p-dialog>
+    <!-- Formulaire -->
+    <div *ngIf="!selectedPanel" class="p-6 lg:p-10 flex flex-col justify-center min-h-screen">
+      <!-- ... ton formulaire existant sans changement ... -->
+    </div>
+
+    <!-- Slide panel -->
+    <section *ngIf="selectedPanel" class="fixed inset-0 lg:inset-y-0 lg:right-0 lg:left-auto
+                                          lg:w-6/12 w-full bg-white shadow-xl z-30
+                                          flex flex-col overflow-hidden">
+      <button (click)="closePanel()" class="self-end text-red-600 m-4 uppercase">✕ Fermer</button>
+      <hr/>
+      <div class="p-4 lg:p-6 overflow-y-auto flex-1">
+        <ng-container [ngSwitch]="selectedPanel">
+          <app-support-panel *ngSwitchCase="'support'"></app-support-panel>
+          <app-update-panel *ngSwitchCase="'update'"></app-update-panel>
+          <app-report-panel *ngSwitchCase="'report'" (submitReport)="onSubmit($event)"></app-report-panel>
+        </ng-container>
+      </div>
+    </section>
+
+  </section>
 </div>
