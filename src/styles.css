@@ -1,8 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+/*
 @layer components {
   .input {
     @apply w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500;
@@ -19,22 +26,150 @@
   .provider {
     @apply px-3 py-1 border rounded-full text-sm text-gray-600;
   }
-}
+}*/
+
 html, body {
   overflow-x: hidden;
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+/**/
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+:root {
+  --brown-deep:    #1a0f0a;
+  --brown-mid:     #321f16;
+  --coral:         #d96b52;
+  --coral-dark:    #c4563e;
+  --gold:          #c9a84c;
+  --cream:         #f5f0eb;
+  --text-light:    #ffffff;
+  --text-muted:    #8a7a72;
+  --text-dark:     #1a0f0a;
+
+  --font-display:  'Playfair Display', Georgia, serif;
+  --font-body:     'Inter', system-ui, sans-serif;
+
+  --transition:    0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius:        6px;
+  --shadow-card:   0 12px 40px rgba(0, 0, 0, 0.12);
+}*/
+:root {
+  --brown-deep:    #1a0808;
+  --brown-mid:     #2b0e0a;
+  --coral:         #c41818;
+  --coral-dark:    #9e1212;
+  --gold:          #e8951a;
+  --gold-bright:   #f5b942;
+  --cream:         #f5ede0;
+  --text-light:    #ffffff;
+  --text-muted:    #b89a8a;
+  --text-dark:     #1a0808;
+
+  --font-display:  'Montserrat', 'Arial Narrow', sans-serif;
+  --font-body:     'Montserrat', system-ui, sans-serif;
+
+  --transition:    0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius:        4px;
+  --shadow-card:   0 12px 40px rgba(0, 0, 0, 0.25);
 }
 
 
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
 
-/* Supprime tous les arrondis du dialog PrimeNG */
+/* Scale root rem slightly for very large monitors so nothing feels tiny/lost */
+@media (min-width: 1800px) {
+  html { font-size: 17px; }
+}
+
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--brown-deep);
+  color: var(--text-light);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+  border: none;
+  outline: none;
+}
+
+section {
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5%, 64px);
+}
+
+/* Wide desktop / large monitors: cap line-length growth, keep generous gutters */
+@media (min-width: 1600px) {
+  .container { max-width: 1320px; }
+}
+
+
+/* Small phones */
+@media (max-width: 380px) {
+  .container { padding: 0 16px; }
+}
+
+
+/* Utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+
+/*
+ Supprime tous les arrondis du dialog PrimeNG
 .p-dialog,
 .p-dialog .p-dialog-header,
 .p-dialog .p-dialog-content {
   border-radius: 0 !important;
 }
 
-/* Supprime les marges internes du contenu si nécessaire */
+ Supprime les marges internes du contenu si nécessaire
 .p-dialog .p-dialog-content {
   padding: 0 !important;
-}
+}*/
 

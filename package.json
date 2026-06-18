@@ -23,6 +23,7 @@
     "i18n-iso-countries": "^7.14.0",
     "karma-coverage": "^2.2.1",
     "karma-jasmine-html-reporter": "^2.2.0",
+    "motion": "12.40.0",
     "ngx-stripe": "^21.8.0",
     "primeng": "^21.0.4",
     "rxjs": "~7.8.0",
