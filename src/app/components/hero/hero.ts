@@ -2,6 +2,8 @@ import {Component, ElementRef, OnDestroy, OnInit, signal} from '@angular/core';
 import {animate} from 'motion';
 type MotionOptions = Parameters<typeof animate>[2];
 type ScrollCallback = Parameters<typeof scroll>[0];
+
+
 interface Slide {
   quote: string;
   highlight: string;
