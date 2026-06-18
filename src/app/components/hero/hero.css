@@ -1,0 +1,261 @@
+.hero-section {
+  position: relative;
+  height: 88vh;
+  height: 88dvh; /* avoids mobile address-bar jump; falls back to vh on unsupported browsers */
+  min-height: 520px;
+  max-height: 900px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 clamp(16px, 5%, 64px);
+}
+
+/* Quote box (Position relative pour caler la croix) */
+.quote-box {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 720px;
+  padding: 40px 48px;
+  background: rgba(26, 15, 10, 0.62);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+/* Parallax background */
+.hero-bg {
+  position: absolute;
+  inset: -80px 0 0 0;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 1.2s ease;
+  will-change: transform;
+}
+
+/* Dark overlay with gradient */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(26, 15, 10, 0.55) 0%,
+    rgba(26, 15, 10, 0.3) 40%,
+    rgba(26, 15, 10, 0.72) 100%
+  );
+  z-index: 1;
+}
+
+/* Gold verse bar */
+.verse-bar {
+  position: absolute;
+  top: 22px;
+  left: 5%;
+  right: 5%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 3;
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  background: rgba(201, 168, 76, 0.1);
+  border: 1px solid rgba(201, 168, 76, 0.25);
+  border-radius: 4px;
+  padding: 8px 16px;
+  backdrop-filter: blur(4px);
+}
+.verse-icon { font-size: 0.7rem; }
+
+/* Quote box */
+.quote-box {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 720px;
+  padding: 40px 48px;
+  background: rgba(26, 15, 10, 0.62);
+  border: 1px solid rgba(201, 168, 76, 0.2);
+  border-radius: 10px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.quote-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+}
+
+.quote-main {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.45;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.quote-main strong {
+  display: block;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--coral);
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+}
+
+.quote-ref {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.06em;
+  margin-bottom: 28px;
+}
+
+/* Hero CTA */
+.hero-cta {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--coral);
+  color: white;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  transition: all var(--transition);
+  box-shadow: 0 6px 20px rgba(217, 107, 82, 0.4);
+}
+.btn-primary:hover {
+  background: var(--coral-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(217, 107, 82, 0.5);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: rgba(255,255,255,0.08);
+  color: white;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  border: 1px solid rgba(255,255,255,0.25);
+  transition: all var(--transition);
+  backdrop-filter: blur(4px);
+}
+.btn-secondary:hover {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.45);
+  transform: translateY(-2px);
+}
+
+/* Dots */
+.slider-dots {
+  position: absolute;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 10px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.35);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition);
+  padding: 0;
+}
+.dot.active {
+  background: var(--coral);
+  transform: scale(1.3);
+  box-shadow: 0 0 8px rgba(217,107,82,0.6);
+}
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.5));
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* Responsive */
+
+/* Tablets: slightly reduce hero height, keep verse bar visible but tighter */
+@media (max-width: 900px) {
+  .hero-section { min-height: 480px; }
+  .verse-bar { font-size: 0.72rem; padding: 7px 14px; }
+}
+
+@media (max-width: 600px) {
+  .quote-box {
+    padding: 28px 22px;
+    margin: 0 10px;
+  }
+  .verse-bar { display: none; }
+  .hero-cta { flex-direction: column; align-items: center; }
+  .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+}
+
+/* Small phones: avoid the quote box feeling cramped, drop scroll hint to save space */
+@media (max-width: 420px) {
+  .hero-section { min-height: 440px; padding: 0 12px; }
+  .quote-box { padding: 24px 18px; margin: 0; }
+  .scroll-hint { display: none; }
+  .slider-dots { bottom: 24px; }
+}
+
+/* Short / landscape phones: hero shouldn't dominate the viewport */
+@media (max-height: 480px) and (orientation: landscape) {
+  .hero-section { height: auto; min-height: 100vh; padding: 90px clamp(16px, 5%, 64px) 40px; }
+  .verse-bar { display: none; }
+  .scroll-hint { display: none; }
+}
+
+/* Large monitors: cap hero content width so it doesn't feel lost in empty space */
+@media (min-width: 1700px) {
+  .hero-section { max-height: 820px; }
+}

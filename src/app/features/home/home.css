@@ -1,0 +1,273 @@
+/* Reset global pour enlever les marges blanches par défaut du navigateur */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-dark-brown: #321f16;
+  --color-coral: #d96b52;
+  --color-coral-hover: #c4563e;
+  --color-text-light: #ffffff;
+  --color-text-dark: #333333;
+}
+
+body {
+  background-color: var(--color-dark-brown); /* Évite les flashs blancs au chargement */
+  margin: 0;
+  padding: 0;
+}
+
+.landing-container {
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+  width: 100%;
+  background-color: var(--color-dark-brown);
+}
+
+/* 1. TOP HEADER (Correction de la zone blanche du haut) */
+.top-header {
+  background-color: var(--color-dark-brown) !important; /* Force l'application de la couleur sombre */
+  color: var(--color-text-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%;
+  min-height: 70px;
+}
+
+.top-header .logo-area {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
+.top-header .logo-area .logo-s {
+  background-color: var(--color-coral);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 50%;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.top-header .header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.top-header .contact-info {
+  display: flex;
+  gap: 15px;
+}
+
+.top-header .contact-info a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+}
+
+.top-header .contact-info a:hover {
+  color: var(--color-coral);
+}
+
+.top-header .btn-donate {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.top-header .btn-donate:hover {
+  background: var(--color-coral);
+  border-color: var(--color-coral);
+}
+
+/* 2. MAIN NAVIGATION (Correction de la barre corail manquante) */
+.main-nav {
+  background-color: var(--color-coral) !important; /* Force l'affichage du fond saumon/corail */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5%;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+.main-nav .social-icons {
+  padding: 10px 0;
+}
+
+.main-nav .social-icons a {
+  color: rgba(255, 255, 255, 0.8);
+  margin-right: 15px;
+  font-size: 0.9rem;
+}
+
+.main-nav .social-icons a:hover {
+  color: white;
+}
+
+.main-nav .nav-links {
+  display: flex;
+  list-style: none;
+}
+
+.main-nav .nav-links li a {
+  display: block;
+  padding: 18px 15px;
+  color: white;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.3s;
+}
+
+.main-nav .nav-links li:hover,
+.main-nav .nav-links li.active {
+  background-color: var(--color-coral-hover);
+}
+
+/* 3. HERO SECTION */
+.hero-section {
+  position: relative;
+  height: 70vh;
+  min-height: 450px;
+  background: url('https://images.unsplash.com/photo-1544764200-d834fd210a23?q=80&w=1800') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.hero-section .hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4); /* Filtre sombre sur l'image */
+}
+
+.hero-section .quote-box {
+  position: relative;
+  z-index: 2;
+  background: var(--color-coral);
+  padding: 25px 30px;
+  border-radius: 6px;
+  text-align: center;
+  width: 100%;
+  max-width: 650px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.hero-section .quote-box h1 {
+  color: white;
+  font-size: 2rem;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+.hero-section .quote-box h1 strong {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.hero-section .slider-dots {
+  position: absolute;
+  bottom: 80px;
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.hero-section .slider-dots .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.hero-section .slider-dots .dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+/* 4. INFO CARDS CONTAINER (Correction de la zone blanche du bas) */
+.info-cards-container {
+  background-color: var(--color-dark-brown); /* Assure un fond marron sous et derrière les cartes */
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  max-width: 1200px;
+  margin: -50px auto 0 auto; /* Fait chevaucher sur le hero */
+  position: relative;
+  z-index: 4;
+  padding: 0 24px 50px 24px; /* Padding bas pour laisser de l'espace */
+}
+
+.info-cards-container .card {
+  background: white;
+  padding: 30px 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+}
+
+.info-cards-container .card .card-icon {
+  font-size: 2rem;
+  color: var(--color-coral);
+  margin-bottom: 12px;
+}
+
+.info-cards-container .card h3 {
+  font-size: 1.25rem;
+  color: var(--color-dark-brown);
+  margin-bottom: 10px;
+}
+
+.info-cards-container .card p {
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* RESPONSIVE TABLETTE & MOBILE */
+@media (max-width: 992px) {
+  .top-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .main-nav {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .main-nav .nav-links {
+    flex-direction: column;
+    width: 100%;
+    text-align: center;
+  }
+
+  .main-nav .nav-links li a {
+    padding: 10px 0;
+  }
+
+  .info-cards-container {
+    margin-top: 30px; /* Enlève le chevauchement négatif sur mobile */
+    padding-top: 20px;
+  }
+}

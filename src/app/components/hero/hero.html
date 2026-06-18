@@ -1,0 +1,64 @@
+<section class="hero-section" id="home">
+  <!-- Parallax background -->
+  <div
+    class="hero-bg"
+    [style.backgroundImage]="'url(' + current.bg + ')'"
+    role="img"
+    aria-label="Fond du hero"
+  ></div>
+
+  <!-- Dark overlay -->
+  <div class="hero-overlay"></div>
+
+  <!-- Gold verse bar top -->
+  <div class="verse-bar">
+    <span class="verse-icon">✦</span>
+    <span>« Aimez-vous les uns les autres comme je vous ai aimés » — Jean 13:34</span>
+  </div>
+
+  <!-- Quote box -->
+  @if (showQuoteBox()) {
+    <div class="quote-box">
+      <button class="btn-close-panel" (click)="closeQuoteBox()" aria-label="Fermer le panneau">
+        <i class="fas fa-times"></i>
+      </button>
+      <span class="quote-eyebrow">Bienvenue</span>
+      <h1 class="quote-main">
+        {{ current.quote }}
+        <strong>{{ current.highlight }}</strong>
+      </h1>
+      <p class="quote-ref">— {{ current.ref }}</p>
+
+      <div class="hero-cta">
+        <a href="#about" class="btn-primary">
+          <i class="fas fa-church"></i> Nous rejoindre
+        </a>
+        <a href="#events" class="btn-secondary">
+          <i class="fas fa-calendar"></i> Nos événements
+        </a>
+      </div>
+    </div>
+
+  }
+
+
+  <!-- Slide dots -->
+  <div class="slider-dots" role="tablist" aria-label="Diaporama">
+    @for (slide of slides; track $index) {
+      <button
+        class="dot"
+        [class.active]="activeIndex() === $index"
+        (click)="goTo($index)"
+        role="tab"
+        [attr.aria-selected]="activeIndex() === $index"
+        [attr.aria-label]="'Slide ' + ($index + 1)"
+      ></button>
+    }
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <!--<span>Défiler</span>-->
+  </div>
+</section>

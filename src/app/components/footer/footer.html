@@ -1,0 +1,64 @@
+<footer class="site-footer">
+  <div class="container footer-grid">
+
+    <!-- Brand -->
+    <div class="footer-col footer-brand">
+      <div class="logo-area">
+        <span class="logo-badge">WCIP</span>
+        <span class="logo-text">Winner Chapel Intl. <em>Paris</em></span>
+      </div>
+     <p class="footer-tagline">
+        Eglise de la Foi Vivante
+      </p>
+      <div class="social-icons">
+        @for (s of socialLinks; track s.label) {
+          <a [href]="s.href" [attr.aria-label]="s.label">
+            <i [class]="s.icon"></i>
+          </a>
+        }
+      </div>
+    </div>
+
+    <!-- Quick links -->
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        @for (link of quickLinks; track link.label) {
+          <li><a [href]="link.href">{{ link.label }}</a></li>
+        }
+      </ul>
+    </div>
+
+    <!-- Service times -->
+    <div class="footer-col">
+      <h4>Horaires des cultes</h4>
+      <ul class="service-times">
+        @for (s of serviceTimes; track s.day) {
+          <li>
+            <span class="day">{{ s.day }}</span>
+            <span class="time">{{ s.time }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+
+    <!-- Contact -->
+    <div class="footer-col">
+      <h4>Nous trouver</h4>
+      <ul class="contact-list">
+        <li><i class="fas fa-map-marker-alt"></i> 17 Boulevard de la Libération 93200 Saint Denis</li>
+        <li><i class="fas fa-phone-alt"></i> +33 1 23 45 67 89</li>
+        <li><i class="fas fa-envelope"></i> contact&#64;winnerschapel.fr</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <p>&copy; {{ year }} Winner Chapel Paris. Tous droits réservés.</p>
+    <div class="footer-legal">
+      <!--<a href="#">Mentions légales</a>
+      <a href="#">Confidentialité</a>-->
+    </div>
+  </div>
+</footer>

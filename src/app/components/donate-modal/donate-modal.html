@@ -1,0 +1,40 @@
+<div class="modal-backdrop" (click)="onBackdropClick($event)" role="presentation">
+  <div
+    class="modal-card"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="donate-modal-title"
+  >
+    <button class="modal-close" (click)="requestClose()" aria-label="Fermer">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <div class="modal-header">
+      <span class="modal-eyebrow">Plateforme de don en ligne</span>
+      <h2 id="donate-modal-title" class="modal-title">Faire un don</h2>
+      <p class="modal-subtitle">
+        Choisissez comment vous souhaitez procéder. Les deux options sont sécurisées.
+      </p>
+    </div>
+
+    <div class="modal-choices">
+      <button class="choice-card" (click)="chooseAnonymous()">
+        <div class="choice-icon"><i class="fas fa-user-secret"></i></div>
+        <h3>Don anonyme</h3>
+        <p>Donnez immédiatement, sans créer de compte.</p>
+        <span class="choice-cta">Continuer <i class="fas fa-arrow-right"></i></span>
+      </button>
+
+      <button class="choice-card" (click)="chooseLogin()">
+        <div class="choice-icon"><i class="fas fa-user-circle"></i></div>
+        <h3>Se connecter</h3>
+        <p>Suivez l'historique de vos dons et vos reçus fiscaux.</p>
+        <span class="choice-cta">Se connecter <i class="fas fa-arrow-right"></i></span>
+      </button>
+    </div>
+
+    <p class="modal-note">
+      <i class="fas fa-lock"></i> Paiement chiffré et sécurisé
+    </p>
+  </div>
+</div>

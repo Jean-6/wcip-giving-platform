@@ -1,0 +1,63 @@
+<!-- TOP BAR : logo + contact + donate -->
+<header class="top-header">
+  <a routerLink="/" class="logo-area">
+    <img src="/assets/images/lfc_logo.png"  alt="Chapelle des Vainqueurs Intl. Paris" class="w-14 h-14 lg:w-30 lg:h-30 object-contain" />
+    <span class="logo-text">
+      <span class="logo-line">Chapelle des Vainqueurs</span>
+      <span class="logo-line logo-sub">Intl. Paris</span>
+    </span>
+  </a>
+
+  <div class="header-right">
+    <div class="contact-info">
+      <a href="tel:+33123456789" class="contact-item">
+        <i class="fas fa-phone-alt"></i>
+        <span>+33 1 23 45 67 89</span>
+      </a>
+      <a href="mailto:contact@winnerschapel.fr" class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <span>contact&#64;winnerschapel.fr</span>
+      </a>
+    </div>
+
+    <button type="button" class="btn-donate" (click)="openDonateModal()">
+      <i class="fas fa-heart"></i>
+      <span>Faire un don</span>
+    </button>
+
+    <button
+      class="hamburger"
+      (click)="toggleMenu()"
+      [attr.aria-expanded]="mobileMenuOpen()"
+      aria-label="Menu"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- MAIN NAV : séparée du header, sticky sous lui -->
+<nav class="main-nav" [class.open]="mobileMenuOpen()">
+  <div class="social-icons">
+    @for (s of socialLinks; track s.label) {
+      <a [href]="s.href" [attr.aria-label]="s.label">
+        <i [class]="s.icon"></i>
+      </a>
+    }
+  </div>
+
+  <ul class="nav-links">
+    @for (link of navLinks; track link.label; let i = $index) {
+      <li [class.active]="link.active">
+        <a [href]="link.href" (click)="setActive(i); mobileMenuOpen.set(false)">
+          {{ link.label }}
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
+
+<!-- DONATE MODAL -->
+@if (donateModalOpen()) {
+  <app-donate-modal (closed)="closeDonateModal()" />
+}
