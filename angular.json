@@ -38,7 +38,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
-
                 }
               ],
               "budgets": [
@@ -58,9 +57,7 @@
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true,
-              "fileReplacements": [{}
-              ]
+              "sourceMap": true
             }
           },
           "defaultConfiguration": "production"
