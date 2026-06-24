@@ -1,0 +1,130 @@
+<section class="events-page">
+  <div class="events-container container">
+
+    <header class="events-header">
+      <div>
+        <span class="auth-eyebrow">Agenda</span>
+        <h1 class="events-title">Événements & Rassemblements</h1>
+      </div>
+    </header>
+
+    <div class="category-scroll">
+      <div class="category-filters">
+        @for (cat of categories; track cat.id) {
+          <button
+            class="filter-chip"
+            [class.active]="activeCategory() === cat.id"
+            (click)="setCategory(cat.id)">
+            {{ cat.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="events-grid">
+      @for (event of filteredEvents(); track event.id) {
+        <article class="event-card" [class.disabled-card]="isFull(event)">
+          <div class="event-image">
+            <img [src]="event.image" [alt]="event.title">
+            <span class="event-tag">{{ event.categoryLabel }}</span>
+            @if (isFull(event)) {
+              <span class="sold-out-badge">Complet</span>
+            }
+          </div>
+
+          <div class="event-info">
+            <div class="event-meta">
+              <span class="meta-item"><i class="far fa-calendar-alt"></i> {{ event.date | date:'dd MMM yyyy à HH:mm' }}</span>
+              <span class="meta-item"><i class="fas fa-map-marker-alt"></i> {{ event.location }}</span>
+            </div>
+
+            <h3 class="event-name">{{ event.title }}</h3>
+            <p class="event-desc">{{ event.description }}</p>
+
+            <div class="capacity-bar-wrap">
+              <div class="capacity-text">
+                <span>{{ event.capacity - event.registeredCount }} places restantes</span>
+                <span>{{ event.capacity }} max</span>
+              </div>
+              <div class="capacity-bar">
+                <div class="capacity-progress" [style.width.%]="(event.registeredCount / event.capacity) * 100"></div>
+              </div>
+            </div>
+
+            <div class="event-footer">
+              <span class="event-price">
+                @if (event.price === 0) { Gratuit } @else { {{ event.price | number:'1.2-2' }} € }
+              </span>
+              <button
+                class="btn-action"
+                [class.btn-fire]="!isFull(event)"
+                [disabled]="isFull(event)"
+                (click)="openRegisterModal(event)">
+                {{ isFull(event) ? 'Complet' : 'S\'inscrire' }}
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+
+  @if (selectedEvent()) {
+    <div class="modal-overlay" (click)="closeModal()">
+      <div class="modal-card auth-card" (click)="$event.stopPropagation()">
+        <button class="btn-close" (click)="closeModal()"><i class="fas fa-times"></i></button>
+
+        @if (successMessage()) {
+          <div class="success-state">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h2>Inscription réussie !</h2>
+            <p>Un email de confirmation vous a été envoyé pour <strong>{{ selectedEvent()?.title }}</strong>.</p>
+          </div>
+        } @else {
+          <span class="auth-eyebrow">Réservation</span>
+          <h2 class="modal-title">S'inscrire à l'événement</h2>
+          <p class="auth-subtitle">{{ selectedEvent()?.title }}</p>
+
+          <label class="field-label" for="reg-name">Nom & Prénom</label>
+          <input
+            id="reg-name"
+            type="text"
+            class="field-input"
+            placeholder="Jean Dupont"
+            [ngModel]="registerName()"
+            (ngModelChange)="registerName.set($event)"
+          />
+
+          <label class="field-label" for="reg-email">Adresse email</label>
+          <input
+            id="reg-email"
+            type="email"
+            class="field-input"
+            placeholder="vous@exemple.com"
+            [ngModel]="registerEmail()"
+            (ngModelChange)="registerEmail.set($event)"
+          />
+
+          <label class="field-label" for="reg-tickets">Nombre de places</label>
+          <select
+            id="reg-tickets"
+            class="field-input"
+            [ngModel]="ticketCount()"
+            (ngModelChange)="ticketCount.set(+$event)">
+            <option value="1">1 place</option>
+            <option value="2">2 places</option>
+            <option value="3">3 places</option>
+            <option value="4">4 places</option>
+          </select>
+
+          <button
+            class="btn-fire btn-block btn-large"
+            [disabled]="!registerName() || !registerEmail() || isSubmitting()"
+            (click)="submitRegistration()">
+            @if (isSubmitting()) { Valisation... } @else { Confirmer mon inscription }
+          </button>
+        }
+      </div>
+    </div>
+  }
+</section>
