@@ -1,0 +1,89 @@
+<section class="auth-page">
+  <div class="auth-bg"></div>
+  <div class="auth-overlay"></div>
+
+  @if (isSubmitting()) {
+    <app-loader message="Création de votre compte..." />
+  }
+
+  <div class="auth-wrap container">
+    <a routerLink="/" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Retour à l'accueil
+    </a>
+
+    <div class="auth-card">
+      <span class="auth-eyebrow">Espace donateur</span>
+      <h1 class="auth-title">Créer un compte</h1>
+      <p class="auth-subtitle">
+        Suivez l'historique de vos dons et générez vos reçus fiscaux automatiquement.
+      </p>
+
+      @if (error()) {
+        <div class="form-error"><i class="fas fa-exclamation-circle"></i> {{ error() }}</div>
+      }
+
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label" for="first-name">Prénom</label>
+          <input
+            id="first-name"
+            type="text"
+            class="field-input"
+            placeholder="Jean"
+            [ngModel]="firstName()"
+            (ngModelChange)="firstName.set($event)"
+          />
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="last-name">Nom</label>
+          <input
+            id="last-name"
+            type="text"
+            class="field-input"
+            placeholder="Dupont"
+            [ngModel]="lastName()"
+            (ngModelChange)="lastName.set($event)"
+          />
+        </div>
+      </div>
+
+      <label class="field-label" for="signup-email">Adresse email</label>
+      <input
+        id="signup-email"
+        type="email"
+        class="field-input"
+        placeholder="vous@exemple.com"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+      />
+
+      <label class="field-label" for="signup-password">Mot de passe</label>
+      <input
+        id="signup-password"
+        type="password"
+        class="field-input"
+        placeholder="8 caractères minimum"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+      />
+
+      <label class="field-label" for="signup-password-confirm">Confirmer le mot de passe</label>
+      <input
+        id="signup-password-confirm"
+        type="password"
+        class="field-input"
+        placeholder="••••••••"
+        [ngModel]="passwordConfirm()"
+        (ngModelChange)="passwordConfirm.set($event)"
+      />
+
+      <button class="btn-fire btn-block btn-large" (click)="submit()" [disabled]="isSubmitting()">
+        Créer mon compte
+      </button>
+
+      <p class="auth-footnote">
+        Déjà un compte ? <a routerLink="/connexion">Se connecter</a>
+      </p>
+    </div>
+  </div>
+</section>
