@@ -1,15 +1,15 @@
 <section class="shop-page">
-  <div class="shop-bg"></div>
-  <div class="shop-overlay"></div>
-
   <div class="shop-container container">
 
-    <header class="shop-header">
-      <div class="header-left">
-        <span class="shop-eyebrow">Librairie Chrétienne</span>
-        <h1 class="shop-title">Boutique en ligne</h1>
-      </div>
+    <header class="page-header">
+      <span class="shop-eyebrow">Librairie Chrétienne</span>
+      <h1 class="shop-title">Boutique en ligne</h1>
+      <p class="page-subtitle">
+        Bibles, livres d'enseignement et musique de louange à découvrir.
+      </p>
+    </header>
 
+    <header class="shop-header">
       <button class="btn-cart-trigger" (click)="toggleCart()">
         <i class="fas fa-shopping-basket"></i>
         @if (cartCount() > 0) {
@@ -18,16 +18,18 @@
       </button>
     </header>
 
-    <div class="category-scroll">
-      <div class="category-filters">
-        @for (cat of categories; track cat.id) {
-          <button
-            class="filter-chip"
-            [class.active]="activeCategory() === cat.id"
-            (click)="setCategory(cat.id)">
-            {{ cat.label }}
-          </button>
-        }
+    <div class="filters-panel">
+      <div class="category-scroll">
+        <div class="category-filters">
+          @for (cat of categories; track cat.id) {
+            <button
+              class="filter-chip"
+              [class.active]="activeCategory() === cat.id"
+              (click)="setCategory(cat.id)">
+              {{ cat.label }}
+            </button>
+          }
+        </div>
       </div>
     </div>
 
