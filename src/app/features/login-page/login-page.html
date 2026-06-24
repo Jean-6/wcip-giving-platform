@@ -1,0 +1,54 @@
+<section class="auth-page">
+  <div class="auth-bg"></div>
+  <div class="auth-overlay"></div>
+
+  @if (isSubmitting()) {
+    <app-loader message="Connexion en cours..." />
+  }
+
+  <div class="auth-wrap container">
+    <a routerLink="/" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Retour à l'accueil
+    </a>
+
+    <div class="auth-card">
+      <span class="auth-eyebrow">Espace donateur</span>
+      <h1 class="auth-title">Connexion</h1>
+      <p class="auth-subtitle">
+        Retrouvez l'historique de vos dons et vos reçus fiscaux.
+      </p>
+
+      @if (error()) {
+        <div class="form-error"><i class="fas fa-exclamation-circle"></i> {{ error() }}</div>
+      }
+
+      <label class="field-label" for="login-email">Adresse email</label>
+      <input
+        id="login-email"
+        type="email"
+        class="field-input"
+        placeholder="vous@exemple.com"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+      />
+
+      <label class="field-label" for="login-password">Mot de passe</label>
+      <input
+        id="login-password"
+        type="password"
+        class="field-input"
+        placeholder="••••••••"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+      />
+
+      <button class="btn-fire btn-block btn-large" (click)="submit()" [disabled]="isSubmitting()">
+        Se connecter
+      </button>
+
+      <p class="auth-footnote">
+        Pas encore de compte ? <a routerLink="/inscription">Créer un compte</a>
+      </p>
+    </div>
+  </div>
+</section>
