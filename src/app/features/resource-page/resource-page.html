@@ -1,0 +1,58 @@
+<div class="resources-container">
+
+  <div class="filters-panel auth-card">
+    <div class="category-filters">
+      @for (cat of categories(); track cat.id) {
+        <button
+          class="filter-chip"
+          [class.active]="activeCategory() === cat.id"
+          (click)="setCategory(cat.id)">
+          {{ cat.label }}
+        </button>
+      }
+    </div>
+
+    <div class="sort-controls">
+      <span>Sort by:</span>
+      <select [ngModel]="currentSort()" (ngModelChange)="currentSort.set($event)">
+        <option value="newest">Plus récent</option>
+        <option value="oldest">Plus ancien</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="resources-list-wrap">
+    <h1>Ressources ({{ totalVisibleResources() }})</h1>
+    <div class="view-controls">
+      <button class="view-btn active"><i class="fas fa-th-large"></i></button>
+      <button class="view-btn"><i class="fas fa-list"></i></button>
+    </div>
+  </div>
+
+  <div class="resources-grid">
+    @for (res of sortedAndFilteredResources(); track res.id) {
+      <article class="resource-card" [class.video-card]="res.fileType === 'MP4'">
+
+        @if (res.imageUrl) {
+          <img [src]="res.imageUrl" class="card-cover" alt="">
+          <i class="fas fa-play video-play-overlay"></i>
+          <div class="card-overlay"></div>
+        } @else {
+          <i [class]="'fas file-icon ' + (res.fileType === 'MP3' ? 'fa-headphones' : 'fa-file-pdf')"></i>
+        }
+
+        <span class="file-tag">{{ res.fileType }}</span>
+
+        <h3>{{ res.title }}</h3>
+
+        <div class="card-footer">
+          <span class="short-date">{{ formatShortDate(res.date) }}</span>
+          <button class="download-count" (click)="downloadResource(res.id)">
+            <i class="fas fa-download"></i> {{ res.downloadCount }}
+          </button>
+        </div>
+      </article>
+    }
+  </div>
+
+</div>
