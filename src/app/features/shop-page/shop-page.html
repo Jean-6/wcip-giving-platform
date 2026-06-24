@@ -1,0 +1,120 @@
+<section class="shop-page">
+  <div class="shop-bg"></div>
+  <div class="shop-overlay"></div>
+
+  <div class="shop-container container">
+
+    <header class="shop-header">
+      <div class="header-left">
+        <span class="shop-eyebrow">Librairie Chrétienne</span>
+        <h1 class="shop-title">Boutique en ligne</h1>
+      </div>
+
+      <button class="btn-cart-trigger" (click)="toggleCart()">
+        <i class="fas fa-shopping-basket"></i>
+        @if (cartCount() > 0) {
+          <span class="cart-badge">{{ cartCount() }}</span>
+        }
+      </button>
+    </header>
+
+    <div class="category-scroll">
+      <div class="category-filters">
+        @for (cat of categories; track cat.id) {
+          <button
+            class="filter-chip"
+            [class.active]="activeCategory() === cat.id"
+            (click)="setCategory(cat.id)">
+            {{ cat.label }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="product-grid">
+      @for (product of filteredProducts; track product.id) {
+        <article class="product-card">
+          <div class="product-image">
+            <img [src]="product.image" [alt]="product.title">
+            <span class="product-tag">{{ product.categoryLabel }}</span>
+          </div>
+
+          <div class="product-info">
+            <h3 class="product-name">{{ product.title }}</h3>
+            <p class="product-author">{{ product.author }}</p>
+            <p class="product-desc">{{ product.description }}</p>
+
+            <div class="product-footer">
+              <span class="product-price">{{ product.price | number:'1.2-2' }} &euro;</span>
+              <button class="btn-add-cart" (click)="addToCart(product)">
+                <i class="fas fa-plus"></i> Ajouter
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    @if (filteredProducts.length === 0) {
+      <p class="empty-state">Aucun article dans cette catégorie pour le moment.</p>
+    }
+  </div>
+
+  @if (cartOpen()) {
+    <div class="cart-drawer-overlay" (click)="toggleCart()"></div>
+    <aside class="cart-drawer">
+      <div class="cart-header">
+        <h2>Votre panier</h2>
+        <button class="btn-close" (click)="toggleCart()" aria-label="Fermer le panier">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="cart-content">
+        @if (cart().length === 0) {
+          <div class="cart-empty">
+            <i class="fas fa-shopping-cart"></i>
+            <p>Votre panier est vide.</p>
+          </div>
+        } @else {
+          <div class="cart-items">
+            @for (item of cart(); track item.product.id) {
+              <div class="cart-item">
+                <img [src]="item.product.image" [alt]="item.product.title" class="item-thumb">
+                <div class="item-details">
+                  <h4>{{ item.product.title }}</h4>
+                  <p>{{ item.product.price | number:'1.2-2' }} &euro;</p>
+                  <div class="quantity-controls">
+                    <button (click)="updateQuantity(item.product.id, item.quantity - 1)" aria-label="Diminuer la quantité">−</button>
+                    <span>{{ item.quantity }}</span>
+                    <button (click)="updateQuantity(item.product.id, item.quantity + 1)" aria-label="Augmenter la quantité">+</button>
+                  </div>
+                </div>
+                <button class="btn-remove" (click)="removeFromCart(item.product.id)" aria-label="Retirer du panier">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="cart-footer">
+        <div class="total-row">
+          <span>Total</span>
+          <span class="total-price">{{ cartTotal() | number:'1.2-2' }} &euro;</span>
+        </div>
+        <button
+          class="btn-fire btn-block"
+          [disabled]="cart().length === 0 || isCheckingOut()"
+          (click)="checkout()">
+          @if (isCheckingOut()) {
+            <i class="fas fa-circle-notch fa-spin"></i> Paiement en cours...
+          } @else {
+            Passer la commande
+          }
+        </button>
+      </div>
+    </aside>
+  }
+</section>
