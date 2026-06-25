@@ -1,59 +1,67 @@
-/* From Uiverse.io by Praashoo7 */
-.loader {
+.loader-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 20px;
 }
 
-.heading {
-  color: black;
-  letter-spacing: 0.2em;
-  margin-bottom: 1em;
+.loader-wrap.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(10, 4, 4, 0.92);
+  backdrop-filter: blur(4px);
 }
 
-.loading {
+/* Emblem: logo + spinning ring around it */
+.loader-emblem {
+  position: relative;
+  width: 88px;
+  height: 88px;
   display: flex;
-  width: 5em;
   align-items: center;
   justify-content: center;
 }
 
-.load {
-  width: 23px;
-  height: 3px;
-  background-color: limegreen;
-  animation: 1s move_5011 infinite;
-  border-radius: 5px;
-  margin: 0.1em;
+.loader-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(232, 149, 26, 0.15);
+  border-top-color: var(--gold);
+  border-right-color: var(--coral);
+  animation: loaderSpin 1.1s linear infinite;
 }
 
-.load:nth-child(1) {
-  animation-delay: 0.2s;
+.loader-logo {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(232, 149, 26, 0.55));
+  animation: loaderPulse 1.6s ease-in-out infinite;
 }
 
-.load:nth-child(2) {
-  animation-delay: 0.4s;
+.loader-message {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
 }
 
-.load:nth-child(3) {
-  animation-delay: 0.6s;
+@keyframes loaderSpin {
+  to { transform: rotate(360deg); }
 }
 
-@keyframes move_5011 {
-  0% {
-    width: 0.2em;
-  }
+@keyframes loaderPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.08); opacity: 0.85; }
+}
 
-  25% {
-    width: 0.7em;
-  }
-
-  50% {
-    width: 1.5em;
-  }
-
-  100% {
-    width: 0.2em;
+@media (prefers-reduced-motion: reduce) {
+  .loader-ring, .loader-logo {
+    animation: none;
   }
 }

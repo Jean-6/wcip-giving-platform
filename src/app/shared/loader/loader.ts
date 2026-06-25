@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+
 
 @Component({
   selector: 'app-loader',
@@ -8,5 +9,6 @@ import { Component } from '@angular/core';
   standalone: true
 })
 export class Loader {
-
+  @Input() message = 'Chargement en cours...';
+  @Input() fullscreen = true;
 }

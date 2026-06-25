@@ -1,10 +1,13 @@
-<!-- From Uiverse.io by Praashoo7 -->
-<div class="loader">
-  <p class="heading">Loading</p>
-  <div class="loading">
-    <div class="load"></div>
-    <div class="load"></div>
-    <div class="load"></div>
-    <div class="load"></div>
+<div class="loader-wrap" [class.fullscreen]="fullscreen">
+  <div class="loader-emblem">
+    <span class="loader-ring"></span>
+    <img
+      src="assets/images/lfc_logo.png"
+      alt="Chargement"
+      class="loader-logo"
+    />
   </div>
+  @if (message) {
+    <p class="loader-message">{{ message }}</p>
+  }
 </div>
