@@ -1,0 +1,240 @@
+<section class="donate-page" id="give-online">
+  <div class="donate-bg"></div>
+  <div class="donate-overlay"></div>
+
+  @if (isProcessing()) {
+    <app-loader message="Redirection vers le paiement sécurisé Stripe..." />
+  }
+
+  <div class="donate-wrap container">
+
+    <!-- ───────── Page header (always visible) ───────── -->
+    <header class="page-header">
+      <span class="page-eyebrow">Plateforme de don en ligne</span>
+      <!--<h1 class="page-title">Votre générosité, en toute simplicité</h1>-->
+      <p class="page-subtitle">
+        Donnez en quelques secondes, anonymement ou depuis votre compte pour suivre l'historique de vos dons.
+      </p>
+    </header>
+
+    <!-- ───────── STEP: Choice ───────── -->
+    @if (mode() === 'choice') {
+      <div class="choice-grid">
+        <button class="choice-card" (click)="chooseAnonymous()">
+          <div class="choice-icon"><i class="fas fa-user-secret"></i></div>
+          <h3>Don anonyme</h3>
+          <p>Donnez immédiatement, sans créer de compte. Un reçu peut vous être envoyé par email si vous le souhaitez.</p>
+          <span class="choice-cta">Continuer sans compte <i class="fas fa-arrow-right"></i></span>
+        </button>
+
+        <button class="choice-card" (click)="chooseLogin()">
+          <div class="choice-icon"><i class="fas fa-user-circle"></i></div>
+          <h3>Se connecter</h3>
+          <p>Accédez à votre espace pour retrouver l'historique de vos dons et générer vos reçus fiscaux automatiquement.</p>
+          <span class="choice-cta">Se connecter <i class="fas fa-arrow-right"></i></span>
+        </button>
+      </div>
+
+      <p class="choice-note">
+        <i class="fas fa-lock"></i> Quel que soit le mode choisi, votre paiement est chiffré et sécurisé.
+      </p>
+    }
+
+    <!-- ───────── STEP: Login ───────── -->
+    @if (mode() === 'login') {
+      <div class="flow-panel login-panel">
+        <button class="btn-back"  (click)="backToChoice()">
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+
+        <div class="panel-card login-card">
+          <h2>Connexion à votre espace</h2>
+          <p class="panel-subtitle">Retrouvez votre historique de dons et vos reçus fiscaux.</p>
+
+          @if (loginError()) {
+            <div class="form-error"><i class="fas fa-exclamation-circle"></i> {{ loginError() }}</div>
+          }
+
+          <label class="field-label" for="login-email">Adresse email</label>
+          <input
+            id="login-email"
+            type="email"
+            class="field-input"
+            placeholder="vous@exemple.com"
+            [ngModel]="loginEmail()"
+            (ngModelChange)="loginEmail.set($event)"
+          />
+
+          <label class="field-label" for="login-password">Mot de passe</label>
+          <input
+            id="login-password"
+            type="password"
+            class="field-input"
+            placeholder="••••••••"
+            [ngModel]="loginPassword()"
+            (ngModelChange)="loginPassword.set($event)"
+          />
+
+          <button class="btn-fire btn-block" (click)="submitLogin()" [disabled]="isSubmittingLogin()">
+            @if (isSubmittingLogin()) {
+              <i class="fas fa-circle-notch fa-spin"></i> Connexion...
+            } @else {
+              Se connecter
+            }
+          </button>
+
+          <div class="login-divider"><span>ou</span></div>
+
+          <button class="btn-ghost btn-block" (click)="continueAsGuestFromLogin()">
+            Continuer sans compte
+          </button>
+
+          <p class="login-footnote">
+            Pas encore de compte ? <a routerLink="/inscription">Créez-en un</a> pour suivre vos dons.
+          </p>
+        </div>
+      </div>
+    }
+
+    <!-- ───────── STEP: Donation form (anonymous or post-login) ───────── -->
+    @if (mode() === 'anonymous') {
+      <div class="flow-panel">
+        <button class="btn-back" (click)="backToChoice()">
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+
+        @if (isLoggedIn()) {
+          <div class="logged-in-badge">
+            <i class="fas fa-check-circle"></i>
+            Connecté en tant que <strong>{{ loginEmail() }}</strong> — votre reçu sera ajouté à votre historique.
+          </div>
+        }
+
+        <div class="donate-form-grid">
+
+          <!-- Left: form -->
+          <div class="panel-card">
+            <h2>Votre don</h2>
+
+            <!-- Frequency -->
+            <div class="frequency-toggle">
+              <button
+                class="freq-btn"
+                [class.active]="frequency() === 'once'"
+                (click)="setFrequency('once')"
+              >Ponctuel</button>
+              <button
+                class="freq-btn"
+                [class.active]="frequency() === 'monthly'"
+                (click)="setFrequency('monthly')"
+              >Mensuel</button>
+            </div>
+
+            <!-- Amount -->
+            <p class="field-label">Montant</p>
+            <div class="amount-grid">
+              <input
+                type="number"
+                class="amount-custom"
+                placeholder="Saisir montant"
+                [ngModel]="customAmount()"
+                (ngModelChange)="onCustomAmountInput($event)"
+                min="1"
+              />
+            </div>
+
+            <!-- Designation -->
+            <label class="field-label" for="designation-select">Destination du don</label>
+            <select
+              id="designation-select"
+              class="field-select"
+              [ngModel]="selectedDesignation()"
+              (ngModelChange)="selectDesignation($event)"
+            >
+              @for (d of designations; track d.id) {
+                <option [value]="d.id">{{ d.label }}</option>
+              }
+            </select>
+            <p class="designation-hint">{{ selectedDesignationDescription }}</p>
+
+            <!-- Optional email for anonymous receipt -->
+            <label class="field-label" for="contact-email">
+              Email pour le reçu <span class="optional-tag">(optionnel)</span>
+            </label>
+            <input
+              id="contact-email"
+              type="email"
+              class="field-input"
+              placeholder="vous@exemple.com"
+              [ngModel]="contactEmail()"
+              (ngModelChange)="contactEmail.set($event)"
+            />
+
+            <!-- Optional message -->
+            <label class="field-label" for="contact-message">
+              Message <span class="optional-tag">(optionnel)</span>
+            </label>
+            <textarea
+              id="contact-message"
+              class="field-textarea"
+              rows="8"
+              placeholder="Un mot d'encouragement, une intention de prière, une précision sur votre don..."
+              [ngModel]="contactMessage()"
+              (ngModelChange)="contactMessage.set($event)"
+            ></textarea>
+
+            <div class="stripe-notice">
+              <i class="fab fa-stripe"></i>
+              <span>
+                Le paiement est traité par <strong>Stripe</strong>, sur une page sécurisée.
+                Nous ne stockons jamais vos coordonnées bancaires.
+              </span>
+            </div>
+          </div>
+
+          <!-- Right: summary -->
+          <aside class="panel-card summary-card">
+            <h3>Récapitulatif</h3>
+
+            <div class="summary-row">
+              <span>Montant</span>
+              <strong>{{ finalAmount() }}&euro;</strong>
+            </div>
+            <div class="summary-row">
+              <span>Fréquence</span>
+              <strong>{{ frequency() === 'once' ? 'Don unique' : 'Tous les mois' }}</strong>
+            </div>
+            <div class="summary-row">
+              <span>Destination</span>
+              <strong>{{ designationLabel }}</strong>
+            </div>
+
+            <div class="summary-divider"></div>
+
+            @if (checkoutError()) {
+              <div class="form-error"><i class="fas fa-exclamation-circle"></i> {{ checkoutError() }}</div>
+            }
+
+            <button
+              class="btn-fire btn-block btn-large"
+              (click)="confirmDonation()"
+              [disabled]="finalAmount() <= 0 || isProcessing()"
+            >
+              @if (isProcessing()) {
+                <i class="fas fa-circle-notch fa-spin"></i> Redirection vers Stripe...
+              } @else {
+                <i class="fas fa-heart"></i> Donner {{ finalAmount() }}&euro;
+              }
+            </button>
+
+            <p class="summary-note">
+              <i class="fas fa-lock"></i> Paiement sécurisé · Reçu fiscal disponible
+            </p>
+          </aside>
+
+        </div>
+      </div>
+    }
+
+  </div>
+</section>
