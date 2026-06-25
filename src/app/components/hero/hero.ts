@@ -60,7 +60,7 @@ export class Hero implements OnInit, OnDestroy {
   constructor(private el: ElementRef) {}
 
   ngOnInit(): void {
-    this.animateIn();
+    setTimeout(() => this.animateIn());
     this.startSlider();
     this.setupParallax();
   }

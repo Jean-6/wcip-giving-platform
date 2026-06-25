@@ -47,9 +47,11 @@
   </div>
 
   <ul class="nav-links">
-    @for (link of navLinks; track link.label; let i = $index) {
-      <li [class.active]="link.active">
-        <a [href]="link.href" (click)="setActive(i); mobileMenuOpen.set(false)">
+    @for (link of navLinks; track link.label) {
+      <li
+        [routerLinkActive]="'active'"
+        [routerLinkActiveOptions]="{ exact: link.href === '/' }">
+        <a [routerLink]="link.href" (click)="closeMobileMenu()">
           {{ link.label }}
         </a>
       </li>

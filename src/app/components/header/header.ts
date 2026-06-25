@@ -1,6 +1,6 @@
 import {Component, ElementRef, OnInit, signal} from '@angular/core';
 import { animate} from 'motion';
-import {RouterLink} from '@angular/router';
+import {RouterLink, RouterLinkActive} from '@angular/router';
 import {DonateModal} from '../donate-modal/donate-modal';
 
 type MotionOptions = Parameters<typeof animate>[2];
@@ -9,6 +9,7 @@ type MotionOptions = Parameters<typeof animate>[2];
   imports: [
     RouterLink,
     DonateModal,
+    RouterLinkActive,
   ],
   templateUrl: './header.html',
   styleUrl: './header.css',
@@ -32,13 +33,11 @@ export class Header implements  OnInit {
 
 
   navLinks = [
-    { label: 'Accueil', href: '#home', active: true },
-    //{ label: 'À propos', href: '#about', active: false },
-    { label: 'Événements', href: '#events', active: false },
-    { label: 'Ressources', href: '#gallery', active: false },
-    { label: 'Témoignages', href: '#sermons', active: false },
-    { label: 'Boutique', href: '#donation', active: false },
-    { label: 'Contact', href: '#donation', active: false },
+    { label: 'Accueil', href: '/'},
+    { label: 'Ressources', href: 'resource' },
+    { label: 'Evenements', href: 'event' },
+    { label: 'Boutique', href: 'shop'},
+    { label: 'Contact', href: 'contact' },
   ];
 
   socialLinks = [
@@ -62,17 +61,9 @@ export class Header implements  OnInit {
     this.mobileMenuOpen.update(v => !v);
   }
 
-  setActive(index: number): void {
-    this.navLinks.forEach((l, i) => l.active = i === index);
-  }
+  openDonateModal(): void { this.donateModalOpen.set(true); }
 
+  closeDonateModal(): void { this.donateModalOpen.set(false); }
 
-  openDonateModal(): void {
-    this.donateModalOpen.set(true);
-  }
-
-  closeDonateModal(): void {
-    this.donateModalOpen.set(false);
-  }
-
+  closeMobileMenu(): void { this.mobileMenuOpen.set(false); }
 }
