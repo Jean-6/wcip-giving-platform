@@ -16,12 +16,11 @@ import {BasicAuthInterceptor} from './core/interceptors/basic-auth-interceptor';
 import {ResponseWrapperInterceptor} from './core/interceptors/response-wrapper-interceptor';
 import localeFr from '@angular/common/locales/fr';
 import {registerLocaleData} from '@angular/common';
+import {provideNgxStripe} from 'ngx-stripe';
 
 
 
 registerLocaleData(localeFr);
-
-
   export const appConfig: ApplicationConfig = {
   providers: [
     { provide: LOCALE_ID, useValue: 'fr' },
@@ -63,6 +62,7 @@ registerLocaleData(localeFr);
     }),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes)
+    provideRouter(routes),
+    provideNgxStripe('')
   ]
 };
