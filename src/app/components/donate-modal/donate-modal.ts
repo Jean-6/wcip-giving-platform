@@ -82,6 +82,11 @@ export class DonateModal implements AfterViewInit, OnDestroy{
 
   chooseLogin(): void {
     this.requestClose();
-    this.router.navigate(['/donner'], { queryParams: { mode: 'login' } });
+    this.router.navigate(['/connexion']);//, { queryParams: { returnUrl: 'login' } }
+  }
+
+  createAccount(): void {
+    this.requestClose();
+    this.router.navigate(['/inscription']);
   }
 }

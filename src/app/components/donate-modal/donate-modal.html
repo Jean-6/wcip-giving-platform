@@ -1,3 +1,4 @@
+
 <div class="modal-backdrop" (click)="onBackdropClick($event)" role="presentation">
   <div
     class="modal-card"
@@ -10,7 +11,7 @@
     </button>
 
     <div class="modal-header">
-      <span class="modal-eyebrow">Plateforme de don en ligne</span>
+      <span class="modal-eyebrow">Give Online</span>
       <h2 id="donate-modal-title" class="modal-title">Faire un don</h2>
       <p class="modal-subtitle">
         Choisissez comment vous souhaitez procéder. Les deux options sont sécurisées.
@@ -32,6 +33,11 @@
         <span class="choice-cta">Se connecter <i class="fas fa-arrow-right"></i></span>
       </button>
     </div>
+
+    <button class="btn-create-account" (click)="createAccount()">
+      <i class="fas fa-user-plus"></i>
+      Créer un compte
+    </button>
 
     <p class="modal-note">
       <i class="fas fa-lock"></i> Paiement chiffré et sécurisé
