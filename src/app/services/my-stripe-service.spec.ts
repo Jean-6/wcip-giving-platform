@@ -1,6 +1,5 @@
-import { TestBed } from '@angular/core/testing';
-
 import { MyStripeService } from './my-stripe-service';
+import {TestBed} from '@angular/core/testing';
 
 describe('MyStripeService', () => {
   let service: MyStripeService;
