@@ -2,6 +2,7 @@ import {Component, ElementRef, OnInit, signal} from '@angular/core';
 import { animate} from 'motion';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {DonateModal} from '../donate-modal/donate-modal';
+import {DonateFlowService} from '../../core/services/donate-flow-service';
 
 type MotionOptions = Parameters<typeof animate>[2];
 @Component({
@@ -47,7 +48,7 @@ export class Header implements  OnInit {
     { icon: 'fab fa-twitter', href: '#', label: 'Twitter' },
   ];
 
-  constructor(private el: ElementRef, ) {}
+  constructor(private el: ElementRef,public donateFlow: DonateFlowService ) {}
 
   ngOnInit(): void {
     const header = this.el.nativeElement.querySelector('.top-header');
@@ -61,9 +62,9 @@ export class Header implements  OnInit {
     this.mobileMenuOpen.update(v => !v);
   }
 
-  openDonateModal(): void { this.donateModalOpen.set(true); }
+  //openDonateModal(): void { this.donateModalOpen.set(true); }
 
-  closeDonateModal(): void { this.donateModalOpen.set(false); }
+  //closeDonateModal(): void { this.donateModalOpen.set(false); }
 
   closeMobileMenu(): void { this.mobileMenuOpen.set(false); }
 }

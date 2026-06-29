@@ -1,4 +1,4 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+<!--<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
   <div class="bg-white w-full max-w-md rounded-2xl shadow-lg p-8 text-center">
 
 
@@ -9,7 +9,7 @@
 
     <ng-container *ngIf="session">
     <ng-container *ngIf="session?.payment_status === 'paid'; else errorBlock">
-      <!-- Icon -->
+      <!-- Icon
       <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
         <svg class="h-10 w-10 text-green-600" fill="none" stroke="currentColor" stroke-width="2"
              viewBox="0 0 24 24">
@@ -18,7 +18,7 @@
         </svg>
       </div>
 
-      <!-- Title -->
+      <!-- Title
       <h1 class="text-2xl font-semibold text-green-600 mb-2">
         Paiement réussi !
       </h1>
@@ -27,7 +27,7 @@
         Votre paiement a été traité avec succès. Un email de confirmation vous a été envoyé.
       </p>
 
-      <!-- Details -->
+      <!-- Details
       <div
         class="bg-gray-50 rounded-xl p-4 text-left text-sm space-y-3">
         <div class="flex justify-between">
@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <!-- CTA -->
+      <!-- CTA
       <button
         class="w-full py-2 bg-green-600 text-white shadow-md mt-2
       hover:bg-green-700  hover:shadow-lg transition-all active::scale-[0.98]"
@@ -61,7 +61,7 @@
         Retour à l’accueil
       </button>
     </ng-container>
-    <!-- ERROR BLOCK -->
+    <!-- ERROR BLOCK
     <ng-template #errorBlock>
       <div class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red-100">
         <svg class="h-10 w-10 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -78,3 +78,69 @@
 
   </div>
 </div>
+-->
+
+<section class="result-page">
+  <div class="result-card">
+
+    @switch (state()) {
+
+      @case ('loading') {
+        <app-loader [fullscreen]="false" message="Vérification de votre paiement..." />
+      }
+
+      @case ('success') {
+        <div class="result-icon success"><i class="fas fa-check"></i></div>
+
+        <h1>Paiement réussi !</h1>
+        <p>Votre paiement a été traité avec succès. Un email de confirmation vous a été envoyé.</p>
+
+        <div class="receipt-details">
+          <div class="receipt-row">
+            <span>Montant du don</span>
+            <strong>{{ amountInEuro | number:'1.2-2' }}&nbsp;&euro;</strong>
+          </div>
+          <div class="receipt-divider"></div>
+          <div class="receipt-row">
+            <span>Transaction N°</span>
+            <code class="receipt-id">{{ truncatedSessionId }}</code>
+          </div>
+          <div class="receipt-row">
+            <span>Mode de paiement</span>
+            <strong>{{ paymentIntent()?.cardBrand }} &bull;&bull;&bull;&bull; {{ paymentIntent()?.cardLast4 }}</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Date</span>
+            <strong>{{ createdDate | date:'dd/MM/yyyy à HH:mm' }}</strong>
+          </div>
+          <div class="receipt-row">
+            <span>Organisation bénéficiaire</span>
+            <strong>Winners Chapel Intl. Paris</strong>
+          </div>
+        </div>
+
+        <a routerLink="/" class="btn-fire">Retour à l'accueil</a>
+      }
+
+      @case ('failed') {
+        <div class="result-icon cancel"><i class="fas fa-times"></i></div>
+        <h1>Paiement échoué</h1>
+        <p>Le paiement n'a pas pu être validé. Aucun montant n'a été débité.</p>
+        <a routerLink="/donner" class="btn-fire">Réessayer le paiement</a>
+        <a routerLink="/" class="btn-ghost">Retour à l'accueil</a>
+      }
+
+      @case ('error') {
+        <div class="result-icon cancel"><i class="fas fa-exclamation-triangle"></i></div>
+        <h1>Vérification impossible</h1>
+        <p>
+          Nous n'avons pas pu vérifier le statut de votre paiement pour le moment.
+          Si un montant a été débité, contactez-nous avec votre référence de transaction.
+        </p>
+        <a routerLink="/donner" class="btn-fire">Réessayer</a>
+        <a routerLink="/contact" class="btn-ghost">Nous contacter</a>
+      }
+    }
+
+  </div>
+</section>

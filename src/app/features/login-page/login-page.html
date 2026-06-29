@@ -7,9 +7,12 @@
   }
 
   <div class="auth-wrap container">
-    <a routerLink="/" class="btn-back">
+    <!--<a routerLink="/" class="btn-back">
       <i class="fas fa-arrow-left"></i> Retour à l'accueil
-    </a>
+    </a>-->
+    <button class="btn-back" (click)="backToChoice()">
+      <i class="fas fa-arrow-left"></i> Retour à l'accueil
+    </button>
 
     <div class="auth-card">
       <span class="auth-eyebrow">Espace donateur</span>

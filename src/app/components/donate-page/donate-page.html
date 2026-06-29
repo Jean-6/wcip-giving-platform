@@ -116,20 +116,6 @@
           <div class="panel-card">
             <h2>Votre don</h2>
 
-            <!-- Frequency -->
-            <div class="frequency-toggle">
-              <button
-                class="freq-btn"
-                [class.active]="frequency() === 'once'"
-                (click)="setFrequency('once')"
-              >Ponctuel</button>
-              <button
-                class="freq-btn"
-                [class.active]="frequency() === 'monthly'"
-                (click)="setFrequency('monthly')"
-              >Mensuel</button>
-            </div>
-
             <!-- Amount -->
             <p class="field-label">Montant</p>
             <div class="amount-grid">
@@ -156,20 +142,6 @@
               }
             </select>
             <p class="designation-hint">{{ selectedDesignationDescription }}</p>
-
-            <!-- Optional email for anonymous receipt -->
-            <label class="field-label" for="contact-email">
-              Email pour le reçu <span class="optional-tag">(optionnel)</span>
-            </label>
-            <input
-              id="contact-email"
-              type="email"
-              class="field-input"
-              placeholder="vous@exemple.com"
-              [ngModel]="contactEmail()"
-              (ngModelChange)="contactEmail.set($event)"
-            />
-
             <!-- Optional message -->
             <label class="field-label" for="contact-message">
               Message <span class="optional-tag">(optionnel)</span>

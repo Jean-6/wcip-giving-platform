@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {Intent} from '../../core/dtos/intent';
 import {ActivatedRoute, RouterLink} from '@angular/router';
 import {PaymentService} from '../../services/payment-service';
@@ -8,13 +8,14 @@ import {AlertService} from '../../core/services/alert-service';
 import {DatePipe, DecimalPipe, NgIf} from '@angular/common';
 import {Loader} from '../../shared/loader/loader';
 
+type ReceiptState = 'loading' | 'success' | 'failed' | 'error';
+
 @Component({
   selector: 'app-transaction-receipt',
   imports: [
     RouterLink,
     DatePipe,
     DecimalPipe,
-    NgIf,
     Loader,
   ],
   templateUrl: './transaction-receipt.html',
@@ -23,9 +24,13 @@ import {Loader} from '../../shared/loader/loader';
 })
 export class TransactionReceipt implements OnInit{
 
-  session: any;
   isLoading: boolean = false;
-  paymentIntent: Intent | null = null;
+
+  session = signal<Session | null >(null);
+  paymentIntent = signal<Intent | null>(null);
+
+
+  state = signal<ReceiptState | null>('loading');
 
   constructor(private readonly route: ActivatedRoute,
               private readonly alert: AlertService,
@@ -36,14 +41,25 @@ export class TransactionReceipt implements OnInit{
     this.isLoading = true
     this.route.queryParams.subscribe(params => {
       const sessionId = params['session_id'];
+
+      if(!sessionId){
+        this.state.set('error');
+        return;
+      }
+
+      this.state.set('loading');
+
+
+
       this.paymentService.verifyPayment(sessionId).subscribe({
         next: (res: ResponseWrapper<Session>) => {
-          this.session = res.data;
-          console.log("transaction receipt", this.session);
-          this.isLoading = false;
+          this.session.set(res.data);
+          this.paymentIntent.set((res.data as any) ?.payment_intent ?? null);
+
+          this.state.set(res.data?.payment_status === 'paid' ? 'success' : 'failed' );
         },
         error: () => {
-          this.isLoading = false;
+          this.state.set('error');
           this.alert.error('Error retrieving payment session');
         }
       })
@@ -51,12 +67,17 @@ export class TransactionReceipt implements OnInit{
   }
 
   get amountInEuro(): number{
-    return (this.session?.amount_total ?? 0) / 100;
+    return (this.session()?.amount_total ?? 0) / 100;
   }
 
   get createdDate(): number | null {
-    return this.session?.createdAt
-      ? new Date(this.session.createdAt).getTime()
-      : null;
+    const createdAt = this.session()?.createdAt;
+    return createdAt ? new Date(createdAt).getTime() : null;
   }
+
+  get truncatedSessionId(): string {
+    return this.session()?.id?.slice(0, 32) ?? '';
+  }
+
+
 }

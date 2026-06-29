@@ -1,0 +1,145 @@
+.result-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background-color: #f0f3f5;
+}
+
+.result-card {
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 44px 36px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.result-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+.result-icon.success {
+  background: var(--coral);
+  box-shadow: 0 8px 24px rgba(196, 24, 24, 0.3);
+}
+.result-icon.cancel {
+  background: #9aa7b4;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.result-card h1 {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1a2c3d;
+  margin-bottom: 12px;
+}
+
+.result-card p {
+  font-size: 0.92rem;
+  color: #5c6c7c;
+  line-height: 1.6;
+  margin-bottom: 26px;
+}
+
+/* ── Receipt details ── */
+.receipt-details {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 18px 20px;
+  text-align: left;
+  font-size: 0.88rem;
+  margin-bottom: 26px;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+}
+.receipt-row span { color: #7f8fa4; }
+.receipt-row strong { color: #1a2c3d; font-weight: 600; text-align: right; }
+
+.receipt-divider {
+  height: 1px;
+  background: #e5ebef;
+  margin: 2px 0;
+}
+
+.receipt-id {
+  font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+  font-size: 0.72rem;
+  color: #44525f;
+  background: #eef1f4;
+  border: 1px solid #d4dce3;
+  border-radius: 6px;
+  padding: 2px 8px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Buttons ── */
+.btn-fire {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 13px 28px;
+  background: var(--coral);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  transition: all var(--transition);
+  box-shadow: 0 6px 18px rgba(196, 24, 24, 0.3);
+}
+.btn-fire:hover {
+  background: var(--coral-dark);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 28px;
+  margin-top: 10px;
+  background: transparent;
+  border: 1.5px solid #d4dce3;
+  color: #1a2c3d;
+  text-decoration: none;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.88rem;
+  transition: all var(--transition);
+}
+.btn-ghost:hover {
+  border-color: var(--coral);
+  color: var(--coral);
+}
+
+@media (max-width: 420px) {
+  .result-card { padding: 32px 24px; }
+  .receipt-row { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .receipt-row strong { text-align: left; }
+}

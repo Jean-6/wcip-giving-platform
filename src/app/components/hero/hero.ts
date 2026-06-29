@@ -35,9 +35,9 @@ export class Hero implements OnInit, OnDestroy {
 
   slides: Slide[] = [
     {
-      quote: "Car c'est ainsi que Dieu a aimé le monde :",
-      highlight: "il a donné son Fils unique",
-      ref: "Jean 3:16",
+      quote: "Cherchez premièrement le royaume et la justice de Dieu;",
+      highlight: "et toutes ces choses vous seront données par-dessus.",
+      ref: "Matthieu 6:33",
       bg: 'assets/images/Bishop-David-Oyedepo1.jpg'
     },
     {

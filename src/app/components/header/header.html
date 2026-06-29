@@ -20,7 +20,7 @@
       </a>
     </div>
 
-    <button type="button" class="btn-donate" (click)="openDonateModal()">
+    <button type="button" class="btn-donate" (click)="donateFlow.open()">
       <i class="fas fa-heart"></i>
       <span>Faire un don</span>
     </button>
@@ -60,6 +60,6 @@
 </nav>
 
 <!-- DONATE MODAL -->
-@if (donateModalOpen()) {
-  <app-donate-modal (closed)="closeDonateModal()" />
+@if (donateFlow.isOpen()) {
+  <app-donate-modal (closed)="donateFlow.close()" />
 }

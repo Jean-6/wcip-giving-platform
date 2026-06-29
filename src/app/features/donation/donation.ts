@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {NgIf, NgSwitch, NgSwitchCase} from '@angular/common';
 import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MyStripeService} from './service/my-stripe-service';
 import {AlertService} from '../../core/services/alert-service';
 import {Dialog} from 'primeng/dialog';
 import {PaymentService} from '../../services/payment-service';
@@ -66,7 +65,7 @@ export class Donation implements OnInit, AfterViewInit{
   }
 
   constructor(private readonly fb: FormBuilder,
-              private readonly stripeService: MyStripeService,
+              //private readonly stripeService: MyStripeService,
               private readonly paymentService: PaymentService,
               private readonly alert: AlertService,
               private readonly googleMapsLoader: GoogleMapsLoaderService,
@@ -140,7 +139,7 @@ export class Donation implements OnInit, AfterViewInit{
 
     this.isLoading = true;
 
-      this.stripeService.init$().subscribe(() => {
+      /*this.stripeService.init$().subscribe(() => {
         this.stripeService.mountAll(
           this.cardNumberEl.nativeElement,
           this.cardExpiryEl.nativeElement,
@@ -148,7 +147,7 @@ export class Donation implements OnInit, AfterViewInit{
         );
         this.cardMounted = true;
         this.isLoading = false
-      });
+      });*/
   }
 
   /**
@@ -175,12 +174,13 @@ export class Donation implements OnInit, AfterViewInit{
     this.isLoading = true;
     (document.activeElement as HTMLElement)?.blur();
     if(this.paymentMethod === 'STRIPE_CHECKOUT'){
-      this.redirectToCheckout();
+      //this.redirectToCheckout();
       return;
     }
 
   }
 
+  /*
   generateUUID(): string {
     // Check if the native browser crypto and randomUUID are available
     if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function') {
@@ -193,7 +193,7 @@ export class Donation implements OnInit, AfterViewInit{
       const v = c === 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
-  }
+  }*/
   redirectToCheckout() {
 
     this.isLoading = true;
@@ -208,7 +208,7 @@ export class Donation implements OnInit, AfterViewInit{
         phone: this.infoForm.value.phone,
         address: this.googleMapsLoader.parseAddress(this.infoForm.value.address)
       },
-      idempotencyKey: this.generateUUID()
+      //idempotencyKey: this.generateUUID()
       //crypto.randomUUID()
     };
 

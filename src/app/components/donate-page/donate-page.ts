@@ -2,7 +2,7 @@ import {
   AfterViewInit,
   ChangeDetectionStrategy,
   Component, computed,
-  ElementRef, HostListener, OnDestroy, output, signal,
+  ElementRef, HostListener, OnDestroy, OnInit, output, signal,
 } from '@angular/core';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {animate, TargetAndTransition} from 'motion';
@@ -10,6 +10,11 @@ import {FormsModule} from '@angular/forms';
 import {StripeService} from 'ngx-stripe';
 import {Loader} from '../../shared/loader/loader';
 import {DonateFlowService} from '../../core/services/donate-flow-service';
+import {MyStripeService} from '../../services/my-stripe-service';
+import {CheckoutSessionRequest} from '../../core/dtos/checkout-session-request';
+import {ResponseWrapper} from '../../core/dtos/response-wrapper';
+import {CheckoutSessionResponse} from '../../core/dtos/checkout-session-response';
+import {AlertService} from '../../core/services/alert-service';
 
 type MotionOptions = Parameters<typeof animate>[2];
 export type MotionOptions1 = TargetAndTransition;
@@ -35,24 +40,24 @@ interface Designation {
   styleUrl: './donate-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class DonatePage implements AfterViewInit, OnDestroy {
+export class DonatePage implements OnInit,AfterViewInit, OnDestroy {
   mode = signal<FlowMode>('choice');
 
-  // Donation form state
-  amounts = [20, 50, 100, 250, 500];
-  selectedAmount = signal<number | null>(100);
   customAmount = signal<string>('');
   frequency = signal<Frequency>('once');
 
+  checkoutSessionPayload : CheckoutSessionRequest = {};
+
   designations: Designation[] = [
-    { id: 'general', label: 'Fonds général', description: "Soutient l'ensemble des activités de l'église" },
-    { id: 'missions', label: 'Missions', description: 'Finance nos missions à l\'international' },
-    { id: 'social', label: 'Action sociale', description: 'Aide alimentaire et accompagnement des familles' },
-    { id: 'building', label: 'Bâtiment', description: "Entretien et rénovation du lieu de culte" },
+    { id: 'general', label: 'Dîme', description: "Soutient l'ensemble des activités de l'église" },
+    { id: 'missions', label: 'Offrande', description: 'Finance nos missions à l\'international' },
+    { id: 'social', label: 'Don', description: 'Aide alimentaire et accompagnement des familles' },
+    { id: 'building', label: 'Sacrifice de Shiloh', description: "Entretien et rénovation du lieu de culte" },
+    { id: 'prophetic', label: 'Offrand Prophetique', description: "Entretien et rénovation du lieu de culte" },
   ];
   selectedDesignation = signal<string>('general');
 
-  // Anonymous flow contact (optional, for receipt only)
+
   contactEmail = signal<string>('');
   contactMessage = signal<string>('');
 
@@ -71,33 +76,28 @@ export class DonatePage implements AfterViewInit, OnDestroy {
   finalAmount = computed<number>(() => {
     const custom = parseFloat(this.customAmount());
     if (!isNaN(custom) && custom > 0) return custom;
-    return this.selectedAmount() ?? 0;
+    return 0;
   });
 
   constructor(
     private el: ElementRef,
     private route: ActivatedRoute,
-    private stripe: StripeService,
+    private myStripe: MyStripeService,
     private router: Router,
-    private donateFlow: DonateFlowService
+    private donateFlow: DonateFlowService,
+    private alert: AlertService
   ) {}
 
-  ngOnDestroy(): void {
-        //throw new Error("Method not implemented.");
-    }
+  ngOnDestroy(): void {}
 
-  ngAfterViewInit(): void {
-        //throw new Error("Method not implemented.");
-    }
+  ngAfterViewInit(): void {}
 
   ngOnInit(): void {
     const amountParam = this.route.snapshot.queryParamMap.get('amount');
     const parsed = amountParam ? parseInt(amountParam, 10) : null;
-    if (parsed && this.amounts.includes(parsed)) {
-      this.selectedAmount.set(parsed);
-    } else if (parsed && parsed > 0) {
+    if (parsed && parsed > 0) {
       this.customAmount.set(String(parsed));
-      this.selectedAmount.set(null);
+      //this.selectedAmount.set(null);
     }
 
     // If the user already chose a path from the header modal, skip the
@@ -146,28 +146,14 @@ export class DonatePage implements AfterViewInit, OnDestroy {
   backToChoice(): void {
     this.mode.set('choice');
     this.isLoggedIn.set(false);
-    this.router.navigate(['/']).then(() => this.donateFlow.isOpen);
-
-    /*this.router.navigate(['/'],{
-      relativeTo: this.route,
-      queryParams: {mode: null},
-      queryParamsHandling: 'merge'
-    });*/
-
+    this.router.navigate(['/']).then(() => this.donateFlow.open());
     setTimeout(() => {
       this.animateChoiceCards();
     }, 50);
 
   }
-
-  selectAmount(value: number): void {
-    this.selectedAmount.set(value);
-    this.customAmount.set('');
-  }
-
   onCustomAmountInput(value: string): void {
     this.customAmount.set(value);
-    if (value) this.selectedAmount.set(null);
   }
 
   selectDesignation(id: string): void {
@@ -205,21 +191,47 @@ export class DonatePage implements AfterViewInit, OnDestroy {
     this.checkoutError.set('');
     this.isProcessing.set(true);
 
-    /*try {
-      await this.stripe.redirectToCheckout({
-        amount: Math.round(this.finalAmount() * 100), // Stripe expects cents
-        mode: this.frequency() === 'monthly' ? 'subscription' : 'payment',
-        designation: this.selectedDesignation(),
-        email: this.contactEmail() || undefined,
-      });
-      // On success, the browser navigates away to Stripe — no further
-      // local state update is needed here.
+    this.checkoutSessionPayload = {
+      amount: parseFloat(this.customAmount()) * 100,
+      currency: 'eur',
+      reason: this.contactMessage(),
+      idempotencyKey: this.generateUUID,
+      //cancelUrl: `${window.location.origin}/donner?mode=anonymous&amount=${parseFloat(this.customAmount()) * 100}`,
+
+    }
+
+    try {
+      this.myStripe.createCheckoutSession(this.checkoutSessionPayload)
+        .subscribe({
+          next: (session: ResponseWrapper<CheckoutSessionResponse>) => {
+            console.log("Into subscribe : ", session);
+            globalThis.location.href = session.data.url; // Redirect to stripe
+          },
+          error: (e) => {
+            this.isProcessing.set(false) ;
+            this.alert.error('Erreur lors de la redirection Stripe');
+            console.error(e);
+          }
+        })
     } catch {
       this.isProcessing.set(false);
       this.checkoutError.set(
         "Impossible de démarrer le paiement pour le moment. Veuillez réessayer dans un instant."
       );
-    }*/
+    }
+  }
+
+  get generateUUID(): string {
+    // Check if the native browser crypto and randomUUID are available
+    if (typeof window !== 'undefined' && window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+    // Fallback math-based UUIDv4 generator (if context is not secure)
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 
   get designationLabel(): string {
