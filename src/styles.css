@@ -23,25 +23,6 @@ html, body {
   padding: 0;
 }
 
-/*
-:root {
-  --brown-deep:    #1a0f0a;
-  --brown-mid:     #321f16;
-  --coral:         #d96b52;
-  --coral-dark:    #c4563e;
-  --gold:          #c9a84c;
-  --cream:         #f5f0eb;
-  --text-light:    #ffffff;
-  --text-muted:    #8a7a72;
-  --text-dark:     #1a0f0a;
-
-  --font-display:  'Playfair Display', Georgia, serif;
-  --font-body:     'Inter', system-ui, sans-serif;
-
-  --transition:    0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  --radius:        6px;
-  --shadow-card:   0 12px 40px rgba(0, 0, 0, 0.12);
-}*/
 :root {
   --brown-deep:    #1a0808;
   --brown-mid:     #2b0e0a;

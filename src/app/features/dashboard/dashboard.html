@@ -1,0 +1,382 @@
+<div class="dashboard-root">
+
+  <!-- ══════════════════════════════════════
+       SIDEBAR
+  ══════════════════════════════════════ -->
+  <aside class="sidebar" [class.open]="isSidebarOpen()">
+    <div class="sidebar-header">
+      <div class="sidebar-avatar">{{ userInitials }}</div>
+      <div class="sidebar-user-info">
+        <strong>{{ user()?.firstname }} {{ user()?.lastname }}</strong>
+        <!--<span>{{ roleLabel(user()?.role ?? 'MEMBER') }}</span>-->
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      @for (tab of tabs; track tab.id) {
+        <button
+          class="sidebar-link"
+          [class.active]="activeTab() === tab.id"
+          (click)="setTab(tab.id)"
+        >
+          <i [class]="tab.icon"></i>
+          <span>{{ tab.label }}</span>
+        </button>
+      }
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="btn-donate-sidebar" (click)="openDonateModal()">
+        <i class="fas fa-heart"></i> Faire un don
+      </button>
+      <button class="btn-logout" (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i> Déconnexion
+      </button>
+    </div>
+  </aside>
+
+  <!-- Overlay mobile -->
+  @if (isSidebarOpen()) {
+    <div class="sidebar-overlay" (click)="isSidebarOpen.set(false)"></div>
+  }
+
+  <!-- ══════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════ -->
+  <main class="dashboard-main">
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <button class="topbar-hamburger" (click)="isSidebarOpen.set(true)">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="topbar-title">
+        @for (tab of tabs; track tab.id) {
+          @if (activeTab() === tab.id) {
+            <span><i [class]="tab.icon"></i> {{ tab.label }}</span>
+          }
+        }
+      </div>
+      <div class="topbar-right">
+        <a routerLink="/" class="topbar-home" title="Retour au site">
+          <i class="fas fa-globe"></i>
+        </a>
+        <div class="topbar-avatar">{{ userInitials }}</div>
+      </div>
+    </header>
+
+    <!-- Loading -->
+    @if (isLoading()) {
+      <div class="dashboard-loading">
+        <div class="spinner"></div>
+        <span>Chargement de votre espace...</span>
+      </div>
+    }
+
+    @if (!isLoading()) {
+      <div class="dashboard-content">
+
+        <!-- ─────────────────────────────────────
+             TAB: VUE D'ENSEMBLE
+        ───────────────────────────────────── -->
+        @if (activeTab() === 'overview') {
+          <section class="tab-section">
+            <div class="section-header">
+              <h2>Bonjour, {{ user()?.firstname }} 👋</h2>
+              <p>Résumé d'activités</p>
+            </div>
+
+            <!-- Stats cards -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-icon coral"><i class="fas fa-heart"></i></div>
+                <div class="stat-body">
+                  <!--<span class="stat-value">{{ totalDonated() | number:'1.2-2' }} €</span>-->
+                  <span class="stat-label">Total des dons</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon gold"><i class="fas fa-gift"></i></div>
+                <div class="stat-body">
+                  <!--<span class="stat-value">{{ donationCount() }}</span>-->
+                  <span class="stat-label">Dons effectués</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon blue"><i class="fas fa-shopping-bag"></i></div>
+                <div class="stat-body">
+                  <!--<span class="stat-value">{{ totalPurchases() | number:'1.2-2' }} €</span>-->
+                  <span class="stat-label">Achats boutique</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon green"><i class="fas fa-file-invoice"></i></div>
+                <div class="stat-body">
+                  <span class="stat-value">{{ invoices().length }}</span>
+                  <span class="stat-label">Reçus disponibles</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Two columns: quick donate + recent donations -->
+            <div class="overview-grid">
+
+              <!-- Quick donate -->
+              <div class="overview-card">
+                <h3><i class="fas fa-bolt"></i> Don rapide</h3>
+                <p class="card-subtitle">Effectuez un don en quelques secondes.</p>
+
+                <div class="quick-amounts">
+                  @for (a of quickAmounts; track a) {
+                    <button
+                      class="quick-amount-btn"
+                      [class.active]="quickAmount() === a"
+                      (click)="quickAmount.set(a)"
+                    >{{ a }} €</button>
+                  }
+                </div>
+
+                <input
+                  type="number"
+                  class="quick-custom-input"
+                  placeholder="Autre montant (€)"
+                  min="1"
+                  [ngModel]="quickAmount()"
+                  (ngModelChange)="quickAmount.set($event)"
+                />
+
+                <button class="btn-fire btn-block" (click)="quickDonate()">
+                  <i class="fas fa-heart"></i> Donner {{ quickAmount() }} €
+                </button>
+              </div>
+
+              <!-- Recent donations -->
+              <div class="overview-card">
+                <h3><i class="fas fa-history"></i> Dons récents</h3>
+                <!-- @if (recentDonations.length === 0) {
+                   <p class="empty-state-small">Aucun don pour le moment.</p>
+                 } @else {
+                   <div class="mini-list">
+                     @for (d of recentDonations; track d.id) {
+                       <div class="mini-row">
+                         <div class="mini-row-left">
+                           <span class="mini-label">{{ d.designation }}</span>
+                           <span class="mini-date">{{ d.date | date:'dd/MM/yyyy' }}</span>
+                         </div>
+                         <div class="mini-row-right">
+                           <span class="mini-amount">{{ d.amount | number:'1.2-2' }} €</span>
+                           <span class="badge {{ statusClass(d.status) }}">{{ statusLabel(d.status) }}</span>
+                         </div>
+                       </div>
+                     }
+                   </div>
+                 }-->
+                <button class="btn-link-text" (click)="setTab('donations')">
+                  Voir tous les dons <i class="fas fa-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          </section>
+        }
+
+        <!-- ─────────────────────────────────────
+             TAB: MES DONS
+        ───────────────────────────────────── -->
+        @if (activeTab() === 'donations') {
+          <section class="tab-section">
+            <div class="section-header">
+              <h2>Mes dons</h2>
+              <button class="btn-fire btn-sm" (click)="openDonateModal()">
+                <i class="fas fa-plus"></i> Nouveau don
+              </button>
+            </div>
+
+            @if (donations().length === 0) {
+              <div class="empty-state">
+                <i class="fas fa-heart"></i>
+                <p>Vous n'avez encore effectué aucun don.</p>
+                <button class="btn-fire" (click)="openDonateModal()">Faire mon premier don</button>
+              </div>
+            } @else {
+              <div class="table-wrap">
+                <table class="data-table">
+                  <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Destination</th>
+                    <th>Fréquence</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th>Reçu</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <!--@for (d of donations(); track d.id) {
+                     <tr>
+                       <td>{{ d.date | date:'dd/MM/yyyy' }}</td>
+                       <td>{{ d.designation }}</td>
+                       <td>
+                         <span class="freq-badge">
+                           {{ d.frequency === 'monthly' ? 'Mensuel' : 'Ponctuel' }}
+                         </span>
+                       </td>
+                       <td><strong>{{ d.amount | number:'1.2-2' }} €</strong></td>
+                       <td><span class="badge {{ statusClass(d.status) }}">{{ statusLabel(d.status) }}</span></td>
+                       <td>
+                         @if (d.receiptUrl && d.status === 'PAID') {
+                           <a [href]="d.receiptUrl" target="_blank" class="btn-icon-link" title="Télécharger le reçu">
+                             <i class="fas fa-download"></i>
+                           </a>
+                         } @else {
+                           <span class="text-muted">—</span>
+                         }
+                       </td>
+                     </tr>
+                   }-->
+                  </tbody>
+                </table>
+              </div>
+            }
+          </section>
+        }
+
+        <!-- ─────────────────────────────────────
+             TAB: MES ACHATS
+        ───────────────────────────────────── -->
+        @if (activeTab() === 'purchases') {
+          <section class="tab-section">
+            <div class="section-header">
+              <h2>Mes achats</h2>
+              <a routerLink="/boutique" class="btn-outline btn-sm">
+                <i class="fas fa-shopping-bag"></i> Aller à la boutique
+              </a>
+            </div>
+
+            @if (purchases().length === 0) {
+              <div class="empty-state">
+                <i class="fas fa-shopping-bag"></i>
+                <p>Vous n'avez encore effectué aucun achat.</p>
+                <a routerLink="/boutique" class="btn-fire">Découvrir la boutique</a>
+              </div>
+            } @else {
+              <div class="purchase-list">
+                @for (p of purchases(); track p.id) {
+                  <div class="purchase-card">
+                    <div class="purchase-header">
+                      <div>
+                        <span class="purchase-id">Commande #{{ p.id }}</span>
+                        <!--<span class="purchase-date">{{ p.date | date:'dd/MM/yyyy' }}</span>-->
+                      </div>
+                      <div class="purchase-meta">
+                        <span class="badge {{ statusClass(p.status) }}">{{ statusLabel(p.status) }}</span>
+                        <strong class="purchase-total">{{ p.total | number:'1.2-2' }} €</strong>
+                      </div>
+                    </div>
+                    <div class="purchase-items">
+                      <!--@for (item of p.items; track item.productId) {
+                        <div class="purchase-item">
+                          <span>{{ item.title }}</span>
+                          <span class="item-qty">× {{ item.quantity }}</span>
+                          <span class="item-price">{{ item.unitPrice | number:'1.2-2' }} €</span>
+                        </div>
+                      }-->
+                    </div>
+                    @if (p.invoiceUrl) {
+                      <div class="purchase-actions">
+                        <a [href]="p.invoiceUrl" target="_blank" class="btn-outline btn-sm">
+                          <i class="fas fa-file-invoice"></i> Facture
+                        </a>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </section>
+        }
+
+        <!-- ─────────────────────────────────────
+             TAB: MES REÇUS / FACTURES
+        ───────────────────────────────────── -->
+        @if (activeTab() === 'invoices') {
+          <section class="tab-section">
+            <div class="section-header">
+              <h2>Mes reçus & factures</h2>
+              <p class="section-subtitle">Téléchargez vos documents fiscaux.</p>
+            </div>
+
+            @if (invoices().length === 0) {
+              <div class="empty-state">
+                <i class="fas fa-file-invoice"></i>
+                <p>Aucun document disponible pour le moment.</p>
+              </div>
+            } @else {
+              <div class="invoices-list">
+                @for (inv of invoices(); track inv.id) {
+                  <div class="invoice-row">
+                    <div class="invoice-icon">
+                      <i class="{{ inv.type === 'DONATION_RECEIPT' ? 'fas fa-heart' : 'fas fa-shopping-bag' }}"></i>
+                    </div>
+                    <div class="invoice-info">
+                      <span class="invoice-label">{{ inv.label }}</span>
+                      <span class="invoice-date">{{ inv.date | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                    <span class="invoice-amount">{{ inv.amount | number:'1.2-2' }} €</span>
+                    <button class="btn-download" (click)="downloadReceipt(inv)" title="Télécharger">
+                      <i class="fas fa-download"></i>
+                    </button>
+                  </div>
+                }
+              </div>
+            }
+          </section>
+        }
+
+        <!-- ─────────────────────────────────────
+             TAB: MON PROFIL / PRIVILÈGES
+        ───────────────────────────────────── -->
+        @if (activeTab() === 'privileges') {
+          <section class="tab-section">
+            <div class="section-header">
+              <h2>Mon profil & droits</h2>
+            </div>
+
+            <div class="profile-grid">
+
+              <!-- Profile card -->
+              <div class="profile-card">
+                <div class="profile-avatar-lg">{{ userInitials }}</div>
+                <h3>{{ user()?.firstname }} {{ user()?.lastname }}</h3>
+                <p class="profile-email">{{ user()?.email }}</p>
+                <!--<span class="role-badge">{{ roleLabel(user()?.role ?? 'MEMBER') }}</span>-->
+                <div class="profile-since">
+                  <i class="fas fa-calendar-alt"></i>
+                  <!--Membre depuis {{ user()?.memberSince | date:'MMMM yyyy' }}-->
+                </div>
+              </div>
+
+              <!-- Privileges -->
+              <div class="privileges-card">
+                <h3>Mes droits d'accès</h3>
+                <div class="privileges-list">
+                  <!-- @for (priv of user()?.privileges ?? []; track priv.code) {
+                     <div class="privilege-item">
+                       <div class="privilege-check"><i class="fas fa-check"></i></div>
+                       <div class="privilege-text">
+                         <strong>{{ priv.label }}</strong>
+                         <span>{{ priv.description }}</span>
+                       </div>
+                     </div>
+                   }-->
+                </div>
+              </div>
+
+            </div>
+          </section>
+        }
+
+      </div>
+    }
+  </main>
+
+</div>

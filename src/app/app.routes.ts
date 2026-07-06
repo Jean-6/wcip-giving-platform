@@ -11,6 +11,7 @@ import {ShopPage} from './features/shop-page/shop-page';
 import {Dashboard} from './features/dashboard/dashboard';
 
 
+
 export const routes: Routes = [
   {path: '',component: Home, title: 'Chapelle des Vainqueurs Intl. Paris'},
   {path: 'donner', component: DonatePage, title: 'Faire un don - Chapelle des Vainqueurs Intl.',},
