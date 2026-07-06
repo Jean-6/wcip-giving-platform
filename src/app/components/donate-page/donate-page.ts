@@ -204,7 +204,6 @@ export class DonatePage implements OnInit,AfterViewInit, OnDestroy {
       this.myStripe.createCheckoutSession(this.checkoutSessionPayload)
         .subscribe({
           next: (session: ResponseWrapper<CheckoutSessionResponse>) => {
-            console.log("Into subscribe : ", session);
             globalThis.location.href = session.data.url; // Redirect to stripe
           },
           error: (e) => {

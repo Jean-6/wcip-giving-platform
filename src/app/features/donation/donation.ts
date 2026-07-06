@@ -138,16 +138,6 @@ export class Donation implements OnInit, AfterViewInit{
     if (this.cardMounted) return;
 
     this.isLoading = true;
-
-      /*this.stripeService.init$().subscribe(() => {
-        this.stripeService.mountAll(
-          this.cardNumberEl.nativeElement,
-          this.cardExpiryEl.nativeElement,
-          this.cardCvcEl.nativeElement
-        );
-        this.cardMounted = true;
-        this.isLoading = false
-      });*/
   }
 
   /**

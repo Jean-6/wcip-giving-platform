@@ -17,6 +17,7 @@ import {ResponseWrapperInterceptor} from './core/interceptors/response-wrapper-i
 import localeFr from '@angular/common/locales/fr';
 import {registerLocaleData} from '@angular/common';
 import {provideNgxStripe} from 'ngx-stripe';
+import {provideAnimations} from '@angular/platform-browser/animations';
 
 
 
@@ -37,6 +38,7 @@ registerLocaleData(localeFr);
     provideHttpClient(withInterceptorsFromDi()),
     MessageService,
     ToastModule,
+    provideAnimations(),
     provideAnimationsAsync(),
     providePrimeNG({
         //  locale: fr,

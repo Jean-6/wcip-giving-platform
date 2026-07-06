@@ -58,6 +58,17 @@
         (ngModelChange)="email.set($event)"
       />
 
+      <label class="field-label" for="signup-email">Login</label>
+      <input
+        id="signup-login"
+        type="text"
+        class="field-input"
+        placeholder="utilisateur"
+        [ngModel]="login()"
+        (ngModelChange)="login.set($event)"
+      />
+
+
       <label class="field-label" for="signup-password">Mot de passe</label>
       <input
         id="signup-password"

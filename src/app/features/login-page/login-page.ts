@@ -4,6 +4,7 @@ import {Loader} from '../../shared/loader/loader';
 import {FormsModule} from '@angular/forms';
 import {animate} from 'motion';
 import {DonateFlowService} from '../../core/services/donate-flow-service';
+import {AlertService} from '../../core/services/alert-service';
 
 
 type FlowMode = 'choice' | 'anonymous' | 'login' | 'confirm';
@@ -31,12 +32,13 @@ export class LoginPage implements OnInit {
   private redirectTo = '/donner';
   private redirectQueryParams: Record<string, string> = { mode: 'anonymous' };
 
-  constructor(private router: Router, private route: ActivatedRoute,private donateFlow: DonateFlowService,  private el: ElementRef) {
+  constructor(private router: Router, private route: ActivatedRoute,private donateFlow: DonateFlowService,  private el: ElementRef, private alert: AlertService) {
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
     if (returnUrl) this.redirectTo = returnUrl;
   }
 
   ngOnInit(): void {
+    //this.alertService.
         //this.isSubmitting = signal(true);
     }
 

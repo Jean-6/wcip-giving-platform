@@ -1,9 +1,14 @@
 import {Component, ElementRef, signal} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
-import {FormsModule} from '@angular/forms';
+import {FormGroup, FormsModule} from '@angular/forms';
 import {Loader} from '../../shared/loader/loader';
 import {animate} from 'motion';
 import {DonateFlowService} from '../../core/services/donate-flow-service';
+import {RegisterRequest} from '../../core/dtos/register-request';
+import {AuthService} from '../../services/auth-service';
+import {ResponseWrapper} from '../../core/dtos/response-wrapper';
+import {RegisterResponse} from '../../core/dtos/register-response';
+import {AlertService} from '../../core/services/alert-service';
 
 type FlowMode = 'choice' | 'anonymous' | 'login' | 'confirm';
 
@@ -18,9 +23,14 @@ type FlowMode = 'choice' | 'anonymous' | 'login' | 'confirm';
   styleUrl: './signup-page.css',
 })
 export class SignupPage {
+
+
+  registerRequestPayload : RegisterRequest = {};
+
   firstName = signal('');
   lastName = signal('');
   email = signal('');
+  login = signal('');
   password = signal('');
   passwordConfirm = signal('');
 
@@ -29,12 +39,15 @@ export class SignupPage {
   isLoggedIn = signal<boolean>(false);
   mode = signal<FlowMode>('choice');
 
-  constructor(private router: Router, private donateFlow: DonateFlowService,  private el: ElementRef) {}
+  //isProcessing = signal<boolean>(false);
+  //checkoutError = signal<string>('');
+
+  constructor(private router: Router, private donateFlow: DonateFlowService,  private el: ElementRef, private authService: AuthService, private alert: AlertService) {}
 
   submit(): void {
     this.error.set('');
 
-    if (!this.firstName() || !this.lastName() || !this.email() || !this.password()) {
+    if (!this.firstName() || !this.lastName() || !this.login()  || !this.email() || !this.password()) {
       this.error.set('Veuillez renseigner tous les champs obligatoires.');
       return;
     }
@@ -49,10 +62,39 @@ export class SignupPage {
 
     this.isSubmitting.set(true);
 
+    this.registerRequestPayload ={
+      firstname: this.firstName(),
+      lastname: this.lastName(),
+      email: this.email(),
+      login: this.login(),
+      password: this.password(),
+    }
+
+    console.log("registerRequest", this.registerRequestPayload);
+
+      this.authService.registration(this.registerRequestPayload)
+        .subscribe({
+          next: (result: ResponseWrapper<RegisterResponse> ) => {
+            console.log("2. Réponse de l'API reçue avec succès !", result);
+            this.isSubmitting.set(false);
+            this.alert.success('Inscription réussie !');
+            this.router.navigate(['/dashboard']);
+
+          },
+          error: (error) => {
+            this.isSubmitting.set(false);
+            this.alert.error('Erreur  during registration');
+            console.log(error);
+          }
+        });
+
+
+
+
     // TODO: replace with the real account-creation API call.
     setTimeout(() => {
       this.isSubmitting.set(false);
-      this.router.navigate(['/donner'], { queryParams: { mode: 'anonymous' } });
+      //this.router.navigate(['/donner'], { queryParams: { mode: 'anonymous' } });
     }, 1000);
   }
 
