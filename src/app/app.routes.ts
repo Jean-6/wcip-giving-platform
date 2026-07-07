@@ -9,6 +9,7 @@ import {EventPage} from './features/event-page/event-page';
 import {ResourcePage} from './features/resource-page/resource-page';
 import {ShopPage} from './features/shop-page/shop-page';
 import {Dashboard} from './features/dashboard/dashboard';
+import {authGuard} from './core/guards/auth.guard';
 
 
 
@@ -24,6 +25,6 @@ export const routes: Routes = [
   { path: 'event', component: EventPage, title: 'Nos evenements — Chapelle des Vainqueurs' },
   { path: 'resource', component: ResourcePage, title: 'Téléchargements & ressources — Chapelle des Vainqueurs' },
   { path: 'contact', component: ContactPage, title: 'Contact — Chapelle des Vainqueurs' },
-  { path: 'dashboard', component: Dashboard, title: 'Dashboard — Chapelle des Vainqueurs' },
+  { path: 'dashboard', component: Dashboard, title: 'Dashboard — Chapelle des Vainqueurs', canActivate: [authGuard] },
 
 ];

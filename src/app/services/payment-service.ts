@@ -8,7 +8,7 @@ import {Session} from '../core/dtos/session';
 import {Intent} from '../core/dtos/intent';
 import {ResponseWrapper} from '../core/dtos/response-wrapper';
 import {environment} from '../../environments/environment';
-import {AuthService} from '../core/services/auth-service';
+import {AuthService} from './auth-service';
 
 @Injectable({
   providedIn: 'root',

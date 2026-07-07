@@ -30,7 +30,7 @@ export class SignupPage {
   firstName = signal('');
   lastName = signal('');
   email = signal('');
-  login = signal('');
+  username = signal('');
   password = signal('');
   passwordConfirm = signal('');
 
@@ -39,15 +39,12 @@ export class SignupPage {
   isLoggedIn = signal<boolean>(false);
   mode = signal<FlowMode>('choice');
 
-  //isProcessing = signal<boolean>(false);
-  //checkoutError = signal<string>('');
-
   constructor(private router: Router, private donateFlow: DonateFlowService,  private el: ElementRef, private authService: AuthService, private alert: AlertService) {}
 
   submit(): void {
     this.error.set('');
 
-    if (!this.firstName() || !this.lastName() || !this.login()  || !this.email() || !this.password()) {
+    if (!this.firstName() || !this.lastName() || !this.username()  || !this.email() || !this.password()) {
       this.error.set('Veuillez renseigner tous les champs obligatoires.');
       return;
     }
@@ -66,11 +63,9 @@ export class SignupPage {
       firstname: this.firstName(),
       lastname: this.lastName(),
       email: this.email(),
-      login: this.login(),
+      username: this.username(),
       password: this.password(),
     }
-
-    console.log("registerRequest", this.registerRequestPayload);
 
       this.authService.registration(this.registerRequestPayload)
         .subscribe({
@@ -78,24 +73,23 @@ export class SignupPage {
             console.log("2. Réponse de l'API reçue avec succès !", result);
             this.isSubmitting.set(false);
             this.alert.success('Inscription réussie !');
+
+
+            if(result.data && result.data.accessToken){
+              this.authService.login(result.data.accessToken);
+            }
+
             this.router.navigate(['/dashboard']);
 
           },
           error: (error) => {
             this.isSubmitting.set(false);
-            this.alert.error('Erreur  during registration');
+            const errorMsg = error.msg || "Une erreur est survenue.";
+            this.error.set(errorMsg);
+            this.alert.error(errorMsg);
             console.log(error);
           }
         });
-
-
-
-
-    // TODO: replace with the real account-creation API call.
-    setTimeout(() => {
-      this.isSubmitting.set(false);
-      //this.router.navigate(['/donner'], { queryParams: { mode: 'anonymous' } });
-    }, 1000);
   }
 
   backToChoice(): void {

@@ -11,9 +11,15 @@ import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {providePrimeNG} from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
-import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClient,
+  provideHttpClient,
+  withInterceptors,
+  withInterceptorsFromDi
+} from '@angular/common/http';
 import {BasicAuthInterceptor} from './core/interceptors/basic-auth-interceptor';
-import {ResponseWrapperInterceptor} from './core/interceptors/response-wrapper-interceptor';
+import {ErrorInterceptor} from './core/interceptors/error-interceptor';
 import localeFr from '@angular/common/locales/fr';
 import {registerLocaleData} from '@angular/common';
 import {provideNgxStripe} from 'ngx-stripe';
@@ -32,10 +38,17 @@ registerLocaleData(localeFr);
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: ResponseWrapperInterceptor,
+      useClass: ErrorInterceptor,
       multi: true
     },
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(
+      withInterceptorsFromDi()
+    ),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    },
     MessageService,
     ToastModule,
     provideAnimations(),

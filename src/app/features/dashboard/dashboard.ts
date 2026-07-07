@@ -1,6 +1,6 @@
 import {Component, signal} from '@angular/core';
 import {Donation} from '../donation/donation';
-import {UserProfile, UserRole} from '../../core/dtos/user-profile';
+import {Profile, UserRole} from '../../core/dtos/user-profile';
 import {DonationStatus} from '../../core/dtos/donation';
 import {Invoice} from '../../core/invoice';
 import {AuthService} from '../../services/auth-service';
@@ -30,7 +30,7 @@ export class Dashboard {
   isLoading = signal<boolean>(true);
   isSidebarOpen = signal(false);
 
-  user = signal<UserProfile | null >(null);
+  user = signal<Profile | null >(null);
   donations = signal<Donation[]>([]);
   purchases = signal<Purchase[]>([]);
   invoices = signal<Invoice[]>([]);
