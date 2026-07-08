@@ -90,10 +90,10 @@ export class Dashboard {
     ]);*/
 
     this.invoices.set([
-      { id: 'inv-001', type: 'DONATION_RECEIPT',  label: 'Reçu don — Juin 2026',    amount: 150, date: '2026-06-15', downloadUrl: '#' },
-      { id: 'inv-002', type: 'DONATION_RECEIPT',  label: 'Reçu don — Mai 2026',     amount: 50,  date: '2026-05-15', downloadUrl: '#' },
-      { id: 'inv-003', type: 'PURCHASE_INVOICE',  label: 'Facture boutique #001',   amount: 24.9, date: '2026-05-20', downloadUrl: '#' },
-      { id: 'inv-004', type: 'DONATION_RECEIPT',  label: 'Reçu don — Avril 2026',   amount: 200, date: '2026-04-10', downloadUrl: '#' },
+      { id: 'inv-001', type: 'DONATION_RECEIPT',  label: 'Reçu don — Juin 2026 - TEST',    amount: 150, date: '2026-06-15', downloadUrl: '#' },
+      { id: 'inv-002', type: 'DONATION_RECEIPT',  label: 'Reçu don — Mai 2026 - TEST',     amount: 50,  date: '2026-05-15', downloadUrl: '#' },
+      { id: 'inv-003', type: 'PURCHASE_INVOICE',  label: 'Facture boutique #001 - TEST',   amount: 24.9, date: '2026-05-20', downloadUrl: '#' },
+      { id: 'inv-004', type: 'DONATION_RECEIPT',  label: 'Reçu don — Avril 2026 - TEST',   amount: 200, date: '2026-04-10', downloadUrl: '#' },
     ]);
 
     /*if (!currentUser) {

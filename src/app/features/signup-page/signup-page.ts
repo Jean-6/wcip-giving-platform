@@ -1,6 +1,6 @@
 import {Component, ElementRef, signal} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
-import {FormGroup, FormsModule} from '@angular/forms';
+import {FormsModule} from '@angular/forms';
 import {Loader} from '../../shared/loader/loader';
 import {animate} from 'motion';
 import {DonateFlowService} from '../../core/services/donate-flow-service';
@@ -48,7 +48,15 @@ export class SignupPage {
       this.error.set('Veuillez renseigner tous les champs obligatoires.');
       return;
     }
-    if (this.password().length < 8) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(this.email().trim())) {
+      this.error.set('Veuillez saisir une adresse e-mail valide.');
+      return;
+    }
+
+
+    if (this.password().length < 6) {
       this.error.set('Le mot de passe doit contenir au moins 8 caractères.');
       return;
     }

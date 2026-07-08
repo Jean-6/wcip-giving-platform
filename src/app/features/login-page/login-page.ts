@@ -37,15 +37,18 @@ export class LoginPage implements OnInit {
     if (returnUrl) this.redirectTo = returnUrl;
   }
 
-  ngOnInit(): void {
-    //this.alertService.
-        //this.isSubmitting = signal(true);
-    }
+  ngOnInit(): void {}
 
   submit(): void {
     this.error.set('');
     if (!this.email() || !this.password()) {
       this.error.set('Veuillez renseigner votre email et votre mot de passe.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(this.email().trim())) {
+      this.error.set('Veuillez saisir une adresse e-mail valide.');
       return;
     }
 
