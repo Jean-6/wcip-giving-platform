@@ -1,0 +1,23 @@
+# %Define step
+
+stages:
+  - build
+  - test
+
+# First job : compiler
+build:
+  stage: build
+  script:
+    - echo "Construction du projet $CI_PROJECT_NAME"
+    - echo "Déclencheur du pipeline $CI_PIPELINE_SOURCE sur $CI_COMMIT_BRANCH"
+    - echo "Version basée sur le commit $CI_COMMIT_SHA"
+
+# Second job : tests
+test:
+  stage: test
+  script:
+    - echo "Lancement des tests pour $CI_PROJECT_NAME"
+    - echo "Branche $CI_COMMIT_BRANCH"
+    - echo "Commit $CI_COMMIT_SHORT_SHA"
+    - echo "Source du pipeline $CI_PIPELINE_SOURCE"
+    - echo "Tous les tests passent !"
