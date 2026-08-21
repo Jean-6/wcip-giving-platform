@@ -1,8 +1,8 @@
 # Etape de build
 FROM node:20-alpine AS build
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+COPY package.json package-lock.json ./
+RUN npm install -g @angular/cli
 COPY . .
 RUN npm run build -- --configuration=production
 
