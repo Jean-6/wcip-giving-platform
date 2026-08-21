@@ -3,11 +3,11 @@ FROM node:20-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 # Install local dependencies
-RUN npm ci
+RUN npm ci --include=dev
 #Install Angular CLI
-RUN npm install -g @angular/cli
+#RUN npm install -g @angular/cli
 COPY . .
-RUN ng build --configuration=production
+RUN npm run build -- --configuration=production
 
 # Execution de l'image
 FROM nginx:1.25-alpine
