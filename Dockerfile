@@ -1,12 +1,17 @@
-# Etape de build
+# Build stage
 FROM node:20-alpine AS build
 WORKDIR /app
+
+# Copy manifests first for layer caching
 COPY package.json package-lock.json ./
 
+# Install all dependencies (including devDependencies for the build)
 RUN npm ci --include=dev
 
-RUN npm install -g @angular/cli@21
+# Copy source after installing deps
 COPY . .
+
+# Use the LOCAL ng (from node_modules/.bin) instead of a global CLI
 RUN npm run build -- --configuration=production
 
 # Execution de l'image
