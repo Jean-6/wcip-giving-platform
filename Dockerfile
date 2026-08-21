@@ -2,17 +2,20 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+# Forcer l'installation de toutes les dépendances (y compris devDependencies)
+ENV NODE_ENV=development
+
 # Copy manifests first for layer caching
 COPY package.json package-lock.json ./
 
 # Install all dependencies (including devDependencies for the build)
-RUN npm ci
+RUN npm ci --include=dev
 
 # Copy source after installing deps
 COPY . .
 
 # Use the LOCAL ng (from node_modules/.bin) instead of a global CLI
-RUN npx ng build --configuration=production
+RUN npm run build -- --configuration=production
 
 # Execution de l'image
 
