@@ -2,11 +2,13 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+ENV NODE_ENV=development
+
 # Copy manifests first for layer caching
 COPY package.json package-lock.json ./
 
 # Install all dependencies (including devDependencies for the build)
-RUN npm ci --include=dev
+RUN npm ci
 
 # Copy source after installing deps
 COPY . .
