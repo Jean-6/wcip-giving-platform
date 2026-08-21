@@ -2,9 +2,9 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm install -g @angular/cli
+RUN npm ci
 COPY . .
-RUN npm run build -- --configuration=production
+RUN npx ng build -- --configuration=production
 
 # Execution de l'image
 FROM nginx:1.25-alpine
