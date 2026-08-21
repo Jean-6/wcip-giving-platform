@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --include=dev
 COPY . .
-RUN npm ng build -- --configuration=production
+RUN npm run build -- --configuration=production
 
 # Execution de l'image
 FROM nginx:1.25-alpine
