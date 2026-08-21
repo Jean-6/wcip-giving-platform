@@ -1,8 +1,12 @@
-# %Define step
+# Define step
 
 stages:
   - build
   - test
+  - build-and-push
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
 
 # First job : compiler
 build:
@@ -21,3 +25,19 @@ test:
     - echo "Commit $CI_COMMIT_SHORT_SHA"
     - echo "Source du pipeline $CI_PIPELINE_SOURCE"
     - echo "Tous les tests passent !"
+
+build-and-push:
+  stage: build-and-push
+  image: docker:25.0
+  services:
+    - docker:25.0-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - echo "Création et publication de l'image Docker pour $CI_PROJECT_NAME"
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+    - echo "Image poussée avec succes sur $CI_REGISTRY_IMAGE"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
